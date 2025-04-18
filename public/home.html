@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Node Backend Project</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.6;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    header {
+      background: #1e1e2f;
+      color: #fff;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.2rem;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 20px;
+      padding: 40px 20px;
+      background: #fff;
+
+    }
+
+    .feature {
+      background: linear-gradient(to bottom right, #ffffff, #f0f0f5);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: 0.3s ease;
+      cursor: pointer;
+      border-left: 5px solid #4caf50;
+    }
+
+    .feature:hover {
+      transform: translateY(-5px);
+      background: linear-gradient(to bottom right, #e8f5e9, #ffffff);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .feature h3 {
+      color: #2e7d32;
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      font-size: 0.95rem;
+      color: #444;
+    }
+
+
+    .cta {
+      background: #1e1e2f;
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .cta h2 {
+      margin-bottom: 20px;
+    }
+
+    .cta button {
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .cta button:hover {
+      background: #43a047;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #1e1e2f;
+      color: white;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Welcome to My Node.js Backend Project</h1>
+    <p>Powerful, scalable, and ready for production</p>
+  </header>
+
+  <section class="features">
+    <div class="feature">
+      <h3>Fast API</h3>
+      <p>Built with Express.js for high performance and speed.</p>
+    </div>
+    <div class="feature">
+      <h3>Secure</h3>
+      <p>Implements best practices for authentication and security.</p>
+    </div>
+    <div class="feature">
+      <h3>Scalable</h3>
+      <p>Ready to handle thousands of requests with ease.</p>
+    </div>
+    <div class="feature">
+      <h3>RESTful Routes</h3>
+      <p>Structured and easy-to-use RESTful API endpoints.</p>
+    </div>
+    <div class="feature">
+      <h3>Database Integration</h3>
+      <p>Supports MongoDB, PostgreSQL, and other databases seamlessly.</p>
+    </div>
+    <div class="feature">
+      <h3>Real-time Support</h3>
+      <p>WebSocket integration for live data & updates.</p>
+    </div>
+    <div class="feature">
+      <h3>Documentation</h3>
+      <p>Auto-generated API documentation with Swagger or Postman.</p>
+    </div>
+    <div class="feature">
+      <h3>Modular Code</h3>
+      <p>Clean architecture with MVC folder structure.</p>
+    </div>
+  </section>
+
+
+  <section class="cta">
+    <h2>Get Started Now</h2>
+    <button onclick="window.location.href='https://github.com/mahmoudmaherofficial'">View on GitHub</button>
+  </section>
+
+  <footer>
+    &copy; 2025 Mahmoud Maher. All rights reserved.
+  </footer>
+
+</body>
+
+</html>
