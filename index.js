@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes'); // إضافة المسارات الخاصة بالمستخدمين
 const accountRoutes = require('./routes/accountRoutes'); // تأكد من أن هذا السطر موجود
+const categoryRoutes = require('./routes/categoryRoutes'); // إضافة المسارات الخاصة بالتصنيفات
 
 dotenv.config();
 const app = express();
@@ -20,6 +21,8 @@ const PORT = process.env.PORT;
 app.use('/api/auth', authRoutes);  // مسارات التوثيق
 app.use('/api/users', userRoutes);  // مسارات المستخدمين
 app.use('/api/account', accountRoutes);  // مسارات الحساب
+app.use('/api/categories', categoryRoutes); // مسارات التصنيفات
+
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/home.html'); // Serve the index.html file from the public directory
