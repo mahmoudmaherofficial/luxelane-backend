@@ -40,6 +40,20 @@ exports.getAllCategories = async (req, res) => {
   }
 }
 
+// الحصول على تصنيف حسب الـ ID (الأدمن فقط)
+exports.getCategoryById = async (req, res) => {
+  const { categoryId } = req.params
+
+  try {
+    const category = await Category.findById(categoryId)
+    if (!category) return res.status(404).json({ error: 'Category not found' })
+
+    res.json(category)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Server error' })
+  }
+}
 
 // تحديث تصنيف
 exports.updateCategory = async (req, res) => {
