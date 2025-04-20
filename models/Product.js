@@ -5,6 +5,10 @@ const productSchema = new mongoose.Schema({
   price: Number,
   description: String,
   stock: Number,
+  size: {
+    type: [String], // مثال: ["S", "M", "L"]
+    default: [],
+  },
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
   images: [String], // مصفوفة صور بدل صورة وحدة
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

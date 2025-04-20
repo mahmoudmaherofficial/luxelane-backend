@@ -44,10 +44,10 @@ exports.getProduct = async (req, res) => {
 // Create product
 exports.createProduct = async (req, res) => {
   try {
-    const { name, price,stock, description, category } = req.body;
+    const { name, price, stock, description, category, size } = req.body;
     const images = req.files;
 
-    if (!name || !price || !description || !category || !stock) {
+    if (!name || !price || !description || !category || !stock || !size) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
@@ -59,6 +59,7 @@ exports.createProduct = async (req, res) => {
       category,
       price,
       stock,
+      size, // ← أضف ده هنا
       images: fileUrls,
       createdBy: req.user._id,
     });
