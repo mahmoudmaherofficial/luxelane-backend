@@ -20,6 +20,7 @@ const authMiddleware = (...allowedRoles) => {
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+      // تحقق من وجود المستخدم
       const user = await User.findById(decoded.userId);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });

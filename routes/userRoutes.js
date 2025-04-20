@@ -13,7 +13,7 @@ router.use(authMiddleware(1995));
 router.get('/', userController.getAllUsers);
 
 // الحصول على مستخدم واحد حسب الـ ID
-router.get('/:userId', userController.getUserById);
+router.get('/:userId', userController.getUser);
 
 // إنشاء مستخدم جديد
 router.post('/', userController.createUser);

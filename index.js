@@ -1,37 +1,46 @@
+// Express initialization
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes'); // إضافة المسارات الخاصة بالمستخدمين
-const accountRoutes = require('./routes/accountRoutes'); // تأكد من أن هذا السطر موجود
-const categoryRoutes = require('./routes/categoryRoutes'); // إضافة المسارات الخاصة بالتصنيفات
+const path = require('path');
 
+// Load environment variables
 dotenv.config();
+
+// App init
 const app = express();
+
+// Middlewares
 app.use(express.json());
-app.use(express.static('public')); // Serve static files from the public directory
 app.use(cors({
-  origin: 'http://localhost:3000', // فرونت إند Next.js
-  credentials: true // لو هتبعت كوكيز أو توكن
+  origin: 'http://localhost:3000',
+  credentials: true,
 }));
 
-const PORT = process.env.PORT;
+// Serve static files
+app.use(express.static('public')); // for frontend public files
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads'))); // لخدمة الملفات المرفوعة
 
-app.use('/api/auth', authRoutes);  // مسارات التوثيق
-app.use('/api/users', userRoutes);  // مسارات المستخدمين
-app.use('/api/account', accountRoutes);  // مسارات الحساب
-app.use('/api/categories', categoryRoutes); // مسارات التصنيفات
+// Routes
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/account', require('./routes/accountRoutes'));
+app.use('/api/categories', require('./routes/categoryRoutes'));
+app.use('/api/products', require('./routes/productRoutes'));
 
-
+// Home route
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/home.html'); // Serve the index.html file from the public directory
-}); // Using the home method from home_controller
+  res.sendFile(path.join(__dirname, 'public', 'home.html'));
+});
+
+// DB & Server
+const PORT = process.env.PORT || 5000;
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
   })
-  .catch(err => console.log(err));
+  .catch(err => console.error('❌ MongoDB connection error:', err));

@@ -31,7 +31,7 @@ exports.getAllCategories = async (req, res) => {
     const totalPages = Math.ceil(totalCategories / limit)
 
     res.json({
-      categories,
+      data: categories,
       totalPages,
       currentPage: page,
     })
@@ -41,7 +41,7 @@ exports.getAllCategories = async (req, res) => {
 }
 
 // الحصول على تصنيف حسب الـ ID (الأدمن فقط)
-exports.getCategoryById = async (req, res) => {
+exports.getCategory = async (req, res) => {
   const { categoryId } = req.params
 
   try {

@@ -7,7 +7,7 @@ const upload = require('../middleware/upload');
 // =================== 🔐 Authentication =================== //
 
 // Register new user
-router.post('/register', upload.single('profile_image'), authController.register);
+router.post('/register', upload.uploadSingle, authController.register);
 
 // Login
 router.post('/login', authController.login);

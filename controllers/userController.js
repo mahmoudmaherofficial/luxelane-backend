@@ -24,7 +24,7 @@ exports.getAllUsers = async (req, res) => {
     // console.log(`Total Users: ${totalUsers}, Total Pages: ${totalPages}, Current Page: ${page}, Limit: ${limit}`)
 
     res.json({
-      users,
+      data: users,
       totalPages,
       currentPage: page,
     })
@@ -35,7 +35,7 @@ exports.getAllUsers = async (req, res) => {
 }
 
 // الحصول على مستخدم واحد حسب الـ ID (للأدمن فقط)
-exports.getUserById = async (req, res) => {
+exports.getUser = async (req, res) => {
   const { userId } = req.params;
 
   try {
