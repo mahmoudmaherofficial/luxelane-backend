@@ -1,92 +1,79 @@
-// controllers/categoryController.js
 const Category = require('../models/Category');
 
-// إنشاء تصنيف جديد
 exports.createCategory = async (req, res) => {
-  const { name, description } = req.body;
   try {
-    const category = new Category({ name, description });
+    const category = new Category({
+      name: req.body.name,
+      description: req.body.description,
+      createdBy: req.user.userId,
+    });
     await category.save();
     res.status(201).json(category);
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }
 };
 
-// الحصول على جميع التصنيفات
-// controllers/categoryController.js
-
 exports.getAllCategories = async (req, res) => {
+  const { page, limit } = req.query;
+  const options = {};
+
+  if (page && limit) {
+    const skip = (page - 1) * limit;
+    options.limit = parseInt(limit, 10);
+    options.skip = parseInt(skip, 10);
+  }
+
   try {
-    const page = parseInt(req.query.page)
-    const limit = parseInt(req.query.limit)
+    const categories = await Category.find({}, null, options).sort({ createdAt: -1 });
 
-    let categories
-    let totalCategories = await Category.countDocuments()
-    let totalPages = 1
-    let currentPage = 1
-
-    if (!isNaN(page) && !isNaN(limit)) {
-      const skip = (page - 1) * limit
-
-      categories = await Category.find()
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-
-      totalPages = Math.ceil(totalCategories / limit)
-      currentPage = page
-    } else {
-      categories = await Category.find().sort({ createdAt: -1 })
-    }
+    const totalCategories = await Category.countDocuments();
+    const totalPages = limit ? Math.ceil(totalCategories / limit) : 1;
+    const currentPage = page ? parseInt(page, 10) : 1;
 
     res.json({
       data: categories,
+      totalCategories,
       totalPages,
       currentPage,
-    })
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Server error' })
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
   }
-}
+};
 
-
-// الحصول على تصنيف حسب الـ ID (الأدمن فقط)
 exports.getCategory = async (req, res) => {
-  const { categoryId } = req.params
-
   try {
-    const category = await Category.findById(categoryId)
-    if (!category) return res.status(404).json({ error: 'Category not found' })
+    const category = await Category.findById(req.params.categoryId);
+    if (!category) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
 
-    res.json(category)
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Server error' })
-  }
-}
-
-// تحديث تصنيف
-exports.updateCategory = async (req, res) => {
-  const { categoryId } = req.params;
-  try {
-    const category = await Category.findByIdAndUpdate(categoryId, req.body, { new: true });
-    if (!category) return res.status(404).json({ error: 'Category not found' });
     res.json(category);
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }
 };
 
-// حذف تصنيف
-exports.deleteCategory = async (req, res) => {
-  const { categoryId } = req.params;
+exports.updateCategory = async (req, res) => {
   try {
-    const category = await Category.findByIdAndDelete(categoryId);
-    if (!category) return res.status(404).json({ error: 'Category not found' });
-    res.json({ message: 'Category deleted' });
-  } catch (err) {
+    const updatedCategory = await Category.findByIdAndUpdate(
+      req.params.categoryId,
+      req.body,
+      { new: true }
+    );
+    res.json(updatedCategory);
+  } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+exports.deleteCategory = async (req, res) => {
+  try {
+    await Category.findByIdAndDelete(req.params.categoryId);
+    res.json({ message: 'Category deleted' });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+

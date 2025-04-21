@@ -28,6 +28,7 @@ exports.getAllUsers = async (req, res) => {
 
     res.json({
       data: users,
+      totalUsers,
       totalPages,
       currentPage,
     })
