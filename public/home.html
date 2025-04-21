@@ -1,13 +1,13 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Node Backend Project</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    * {
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -20,20 +20,15 @@
       color: #333;
     }
 
-    header {
+    header, .cta, footer {
       background: #1e1e2f;
       color: #fff;
-      padding: 40px 20px;
       text-align: center;
+      padding: 40px 20px;
     }
 
-    header h1 {
-      font-size: 2.5rem;
+    header h1, .cta h2 {
       margin-bottom: 10px;
-    }
-
-    header p {
-      font-size: 1.2rem;
     }
 
     .features {
@@ -45,7 +40,7 @@
     }
 
     .feature {
-      background: linear-gradient(to bottom right, #ffffff, #f0f0f5);
+      background: linear-gradient(to bottom right, #fff, #f0f0f5);
       padding: 25px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -56,7 +51,7 @@
 
     .feature:hover {
       transform: translateY(-5px);
-      background: linear-gradient(to bottom right, #e8f5e9, #ffffff);
+      background: linear-gradient(to bottom right, #e8f5e9, #fff);
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
     }
 
@@ -69,18 +64,6 @@
     .feature p {
       font-size: 0.95rem;
       color: #444;
-    }
-
-    .cta {
-      background: #1e1e2f;
-      color: white;
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .cta h2 {
-      margin-bottom: 20px;
-      font-size: 2rem;
     }
 
     .cta button {
@@ -99,22 +82,12 @@
     }
 
     footer {
-      text-align: center;
-      padding: 20px;
-      background: #1e1e2f;
-      color: white;
       font-size: 0.9rem;
     }
 
-    /* Responsive text sizes */
     @media (max-width: 600px) {
-      header h1 {
+      header h1, .cta h2 {
         font-size: 2rem;
-      }
-
-      header p,
-      .cta h2 {
-        font-size: 1rem;
       }
 
       .cta button {
@@ -126,7 +99,6 @@
 </head>
 
 <body>
-
   <header>
     <h1>Welcome to My Node.js Backend Project</h1>
     <p>Powerful, scalable, and ready for production</p>
@@ -175,94 +147,6 @@
   <footer>
     &copy; 2025 Mahmoud Maher. All rights reserved.
   </footer>
-
-</body>
-
-</html> -->
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>رسالة حب لزوزه</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
-    rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "Roboto", sans-serif;
-      background: linear-gradient(135deg, #ffd6e0, #ffe9f0);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      padding: 20px;
-    }
-
-    .love-container {
-      background: white;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(255, 0, 120, 0.2);
-      max-width: 600px;
-      text-align: center;
-    }
-
-    h1 {
-      color: #ff4d79;
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
-
-    p {
-      color: #444;
-      font-size: 1.3rem;
-      line-height: 2;
-    }
-
-    .heart {
-      font-size: 50px;
-      color: red;
-      margin-top: 20px;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.2);
-      }
-
-      100% {
-        transform: scale(1);
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <div class="love-container">
-    <h1>إلى زوزه الغالية ❤️</h1>
-    <p>
-      وجودك في حياتي هو أجمل نعمة، وضحكتك أجمل لحن. كل لحظة معاك بتخليني أحب الحياة أكتر.
-    </p>
-    <p>
-      بحبك من قلبي، وهفضل أحبك دايمًا 💖
-    </p>
-    <p>
-      حبيب قلبك ❤️
-    </p>
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9dCOmX8Nj3O1U1jSxw2pwk3mumQI8NQ-VJw&s" alt="Love Image" width="100"
-      style="border-radius: 10px;">
-    <div class="heart">❤️</div>
-  </div>
 </body>
 
 </html>
