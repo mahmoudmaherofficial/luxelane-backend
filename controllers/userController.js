@@ -4,35 +4,39 @@ const User = require('../models/User');
 // الحصول على جميع المستخدمين (الأدمن فقط)
 exports.getAllUsers = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1
-    const limit = parseInt(req.query.limit) || 10
-    const skip = (page - 1) * limit
+    const page = parseInt(req.query.page)
+    const limit = parseInt(req.query.limit)
 
-    // استعلام للحصول على المستخدمين
-    const users = await User.find()
-      .select('-password')
-      .skip(skip)
-      .limit(limit)
+    let users
+    let totalUsers = await User.countDocuments()
+    let totalPages = 1
+    let currentPage = 1
 
-    // حساب العدد الإجمالي للمستخدمين
-    const totalUsers = await User.countDocuments()
+    if (!isNaN(page) && !isNaN(limit)) {
+      const skip = (page - 1) * limit
 
-    // حساب العدد الإجمالي للصفحات
-    const totalPages = Math.ceil(totalUsers / limit)
+      users = await User.find()
+        .select('-password')
+        .skip(skip)
+        .limit(limit)
 
-    // // سجل المعلومات للتحقق
-    // console.log(`Total Users: ${totalUsers}, Total Pages: ${totalPages}, Current Page: ${page}, Limit: ${limit}`)
+      totalPages = Math.ceil(totalUsers / limit)
+      currentPage = page
+    } else {
+      users = await User.find().select('-password')
+    }
 
     res.json({
       data: users,
       totalPages,
-      currentPage: page,
+      currentPage,
     })
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Server error' })
   }
 }
+
 
 // الحصول على مستخدم واحد حسب الـ ID (للأدمن فقط)
 exports.getUser = async (req, res) => {

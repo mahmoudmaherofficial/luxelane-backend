@@ -4,27 +4,35 @@ const Product = require('../models/Product')
 // Get all products
 exports.getAllProducts = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1
-    const limit = parseInt(req.query.limit) || 10
-    const skip = (page - 1) * limit
+    const page = parseInt(req.query.page, 10);
+    const limit = parseInt(req.query.limit, 10);
+    const isPaginated = !isNaN(page) && !isNaN(limit);
+    const offset = isPaginated ? (page - 1) * limit : 0;
 
-    const total = await Product.countDocuments()
-    const products = await Product.find()
-      .skip(skip)
-      .limit(limit)
+    const totalItems = await Product.countDocuments();
+
+    let productQuery = Product.find()
       .populate('category', 'name')
-      .populate('createdBy', 'username')
+      .populate('createdBy', 'username');
+
+    if (isPaginated) {
+      productQuery = productQuery.skip(offset).limit(limit);
+    }
+
+    const products = await productQuery;
 
     res.json({
       data: products,
-      currentPage: page,
-      totalPages: Math.ceil(total / limit),
-      totalItems: total,
-    })
+      ...(isPaginated && {
+        currentPage: page,
+        totalPages: Math.ceil(totalItems / limit),
+        totalItems,
+      }),
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Server error' })
+    res.status(500).json({ error: 'Server error' });
   }
-}
+};
 
 // Get single product
 exports.getProduct = async (req, res) => {
@@ -51,7 +59,33 @@ exports.createProduct = async (req, res) => {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    const fileUrls = images.map((file) => getFileUrl(file.filename))
+    const fileUrls = images?.map((file) => getFileUrl(file.filename));
+
+    // ترتيب المقاسات
+    const standardOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+    const sortedSizes = [...size].sort((a, b) => {
+      const upperA = a.toUpperCase();
+      const upperB = b.toUpperCase();
+
+      const indexA = standardOrder.indexOf(upperA);
+      const indexB = standardOrder.indexOf(upperB);
+
+      const extractNumber = (val) => {
+        const match = val.match(/(\d+)/);
+        return match ? parseInt(match[1], 10) : Infinity;
+      };
+
+      // الاتنين موجودين في المقاسات المعروفة
+      if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+
+      // واحد منهم معروف
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+
+      // الاتنين مش معروفين → قارن بالأرقام
+      return extractNumber(upperA) - extractNumber(upperB);
+    });
 
     const newProduct = await Product.create({
       name,
@@ -59,7 +93,7 @@ exports.createProduct = async (req, res) => {
       category,
       price,
       stock,
-      size, // ← أضف ده هنا
+      size: sortedSizes,
       images: fileUrls,
       createdBy: req.user._id,
     });
