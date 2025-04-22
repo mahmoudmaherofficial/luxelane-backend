@@ -24,11 +24,11 @@ app.use(express.static('public')); // for frontend public files
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads'))); // لخدمة الملفات المرفوعة
 
 // Routes
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/account', require('./routes/accountRoutes'));
-app.use('/api/categories', require('./routes/categoryRoutes'));
-app.use('/api/products', require('./routes/productRoutes'));
+app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/users', require('./routes/user.routes'));
+app.use('/api/account', require('./routes/account.routes'));
+app.use('/api/categories', require('./routes/category.routes'));
+app.use('/api/products', require('./routes/product.routes'));
 
 // Home route
 app.get('/', (req, res) => {
