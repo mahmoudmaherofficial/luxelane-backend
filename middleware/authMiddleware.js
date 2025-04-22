@@ -33,7 +33,7 @@ const authMiddleware = (...allowedRoles) => {
 
       // التحقق من صلاحيات الدور
       if (allowedRoles.length && !allowedRoles.includes(user.role)) {
-        return res.status(403).json({ error: 'Access denied: insufficient role' });
+        return res.status(403).json({ error: 'Access denied: Unauthorized' });
       }
 
       next();

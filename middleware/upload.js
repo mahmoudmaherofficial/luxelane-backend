@@ -1,43 +1,52 @@
-// middleware/upload.js
 const multer = require('multer');
 const path = require('path');
 
-// تحديد مكان حفظ الصور
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // حفظ الملفات في مجلد "public/uploads"
-    cb(null, 'public/uploads/');
-  },
-  filename: (req, file, cb) => {
-    // إنشاء اسم فريد لكل صورة باستخدام الطابع الزمني واسم الملف الأصلي
-    const uniqueName = Date.now() + '-' + file.originalname;
-    cb(null, uniqueName); // تعيين اسم الملف
-  },
+  destination: (req, file, cb) => cb(null, 'public/uploads/'),
+  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname.replace(/\s+/g, '_')}`),
 });
 
-// تعريف الرفع باستخدام Multer مع القيود على الحجم ونوع الملف
+const fileFilter = (req, file, cb) => {
+  const types = /jpeg|jpg|png/;
+  const extname = types.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = types.test(file.mimetype);
+  if (mimetype && extname) {
+    return cb(null, true);
+  }
+  cb(new Error('Only images are allowed'));
+};
+
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // الحد الأقصى لحجم الصورة 5MB
-  fileFilter: (req, file, cb) => {
-    const types = /jpeg|jpg|png/; // الأنواع المدعومة (JPEG, JPG, PNG)
-    const extname = types.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = types.test(file.mimetype);
-    if (mimetype && extname) {
-      return cb(null, true); // السماح بالملفات المدعومة
-    }
-    cb(new Error('Only images are allowed')); // خطأ في حالة الملف غير المدعوم
-  },
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter,
 });
 
-// دالة لرفع صورة واحدة
-const uploadSingle = upload.single('image'); // رفع صورة واحدة
+const uploadSingle = (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    next();
+  });
+};
 
-// دالة لرفع مجموعة من الصور
-const uploadMultiple = upload.array('images', 10); // رفع مجموعة من الصور (حد أقصى 10 صور)
+const uploadMultiple = (req, res, next) => {
+  upload.array('images', 10)(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    next();
+  });
+};
 
-// تعيين الهوست في الرابط (يتم جلب الهوست من متغير بيئي)
-const host = process.env.HOST_URL || 'http://localhost:5000'; // جلب الهوست من متغير بيئي أو استخدام localhost
-const getFileUrl = (fileName) => `${host}/uploads/${fileName}`; // رابط الوصول للصورة
+const getFileUrl = (fileName) => {
+  if (!fileName) {
+    throw new Error('File name is required');
+  }
+  const host = process.env.HOST_URL || 'http://localhost:5000';
+  return `${host}/uploads/${fileName}`;
+};
 
 module.exports = { uploadSingle, uploadMultiple, getFileUrl };
+

@@ -10,6 +10,7 @@ dotenv.config();
 
 // App init
 const app = express();
+app.use(express.urlencoded({ extended: true }));
 
 // Middlewares
 app.use(express.json());

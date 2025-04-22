@@ -1,5 +1,7 @@
 const { getFileUrl } = require('../middleware/upload');
 const Product = require('../models/Product');
+const fs = require('fs')
+const path = require('path')
 
 // Get all products
 exports.getAllProducts = async (req, res) => {
@@ -106,22 +108,79 @@ exports.createProduct = async (req, res) => {
 
 // Update product
 exports.updateProduct = async (req, res) => {
-  try {
-    const updatedProduct = await Product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+  const { id } = req.params;
 
-    if (!updatedProduct) {
-      return res.status(404).json({ error: 'Product not found' });
+  try {
+    const existingProduct = await Product.findById(id);
+    if (!existingProduct) {
+      return res.status(404).json({ message: 'Product not found' });
     }
 
-    res.json(updatedProduct);
-  } catch (error) {
-    res.status(400).json({ error: 'Failed to update product' });
+    const {
+      name,
+      price,
+      stock,
+      description,
+      size,
+      category,
+    } = req.body || {};
+
+    const standardOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    const sortedSizes = (Array.isArray(size) ? size : [size || existingProduct.size]).sort((a, b) => {
+      const indexA = standardOrder.indexOf(a.toUpperCase());
+      const indexB = standardOrder.indexOf(b.toUpperCase());
+      return indexA !== -1 && indexB !== -1 ? indexA - indexB :
+        indexA !== -1 ? -1 :
+          indexB !== -1 ? 1 :
+            parseInt(a.match(/\d+/), 10) - parseInt(b.match(/\d+/), 10);
+    });
+
+    const updatedData = {
+      name: name || existingProduct.name,
+      price: price || existingProduct.price,
+      stock: stock || existingProduct.stock,
+      description: description || existingProduct.description,
+      size: sortedSizes,
+      category: category || existingProduct.category,
+      images: [...existingProduct.images, ...(req.files ? req.files.map(file => getFileUrl(file.filename)) : [])],
+    };
+
+    Object.assign(existingProduct, updatedData);
+    const updatedProduct = await existingProduct.save();
+
+    res.status(200).json(updatedProduct);
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating product' });
   }
 };
+
+
+// Delete Product Image
+exports.deleteProductImage = async (req, res) => {
+  const { productId, imageName } = req.params;
+
+  try {
+    const product = await Product.findById(productId);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+
+    const updatedImages = product.images.filter((img) => {
+      const fileName = img.split('/').pop();
+      return fileName !== imageName;
+    });
+
+    product.images = updatedImages;
+    await product.save();
+
+    const imagePath = path.join(__dirname, '..', 'uploads', imageName);
+    if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
+
+    res.json({ message: 'Image deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 
 // Delete product
 exports.deleteProduct = async (req, res) => {
