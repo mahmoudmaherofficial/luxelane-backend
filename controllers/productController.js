@@ -1,4 +1,4 @@
-const { getFileUrl } = require('../middleware/upload');
+const { getFileUrl } = require('../middleware/multerConfig');
 const Product = require('../models/Product');
 const fs = require('fs')
 const path = require('path')

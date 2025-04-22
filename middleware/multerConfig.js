@@ -25,6 +25,7 @@ const upload = multer({
 const uploadSingle = (req, res, next) => {
   upload.single('image')(req, res, (err) => {
     if (err) {
+      console.error('Multer error:', err); // Debug log
       return res.status(400).json({ error: err.message });
     }
     next();
@@ -34,6 +35,7 @@ const uploadSingle = (req, res, next) => {
 const uploadMultiple = (req, res, next) => {
   upload.array('images', 10)(req, res, (err) => {
     if (err) {
+      console.error('Multer error:', err); // Debug log
       return res.status(400).json({ error: err.message });
     }
     next();
@@ -49,4 +51,3 @@ const getFileUrl = (fileName) => {
 };
 
 module.exports = { uploadSingle, uploadMultiple, getFileUrl };
-

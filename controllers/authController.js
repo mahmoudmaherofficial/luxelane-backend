@@ -1,9 +1,21 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
-// دالة لإنشاء التوكن
-const createToken = (user) => {
-  return jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+// دالة لإنشاء التوكنات
+const createTokens = (user) => {
+  const accessToken = jwt.sign(
+    { userId: user._id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: '15m' }
+  );
+
+  const refreshToken = jwt.sign(
+    { userId: user._id },
+    process.env.REFRESH_TOKEN_SECRET,
+    { expiresIn: '7d' }
+  );
+
+  return { accessToken, refreshToken };
 };
 
 // دالة الموحدة للتعامل مع الأخطاء
@@ -37,11 +49,19 @@ exports.register = async (req, res) => {
       email,
       password,
       profile_image,
-      role: 2004 // Role: User
+      role: 2004
     });
 
-    const token = createToken(user);
-    res.status(201).json({ token, user });
+    const { accessToken, refreshToken } = createTokens(user);
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    res.status(200).json({ accessToken, user });
   } catch (err) {
     handleError(res, err, 'Error occurred while registering the user');
   }
@@ -65,10 +85,61 @@ exports.login = async (req, res) => {
       return res.status(400).json({ error: 'Invalid password' });
     }
 
-    const token = createToken(user);
-    res.status(200).json({ token, user });
+    const { accessToken, refreshToken } = createTokens(user);
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    res.status(200).json({ accessToken, user });
   } catch (err) {
     handleError(res, err, 'Error occurred during login');
+  }
+};
+
+exports.refreshToken = async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) {
+    return res.status(401).json({ error: 'No refresh token provided' });
+  }
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const { accessToken, newRefreshToken } = createTokens(user);
+
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    res.json({ accessToken });
+  } catch (err) {
+    res.status(403).json({ error: 'Invalid refresh token' });
+  }
+};
+
+exports.logout = async (req, res) => {
+  try {
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+
+    res.status(200).json({ message: 'Logged out successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -104,6 +175,12 @@ exports.deleteAccount = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.user.userId);
     if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
 
     res.json({ message: 'Account deleted successfully' });
   } catch (err) {

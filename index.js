@@ -1,9 +1,9 @@
-// Express initialization
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 // Load environment variables
 dotenv.config();
@@ -14,14 +14,16 @@ app.use(express.urlencoded({ extended: true }));
 
 // Middlewares
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true,
 }));
 
 // Serve static files
-app.use(express.static('public')); // for frontend public files
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads'))); // لخدمة الملفات المرفوعة
+app.use(express.static('public'));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Routes
 app.use('/api/auth', require('./routes/auth.routes'));

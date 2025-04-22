@@ -1,20 +1,20 @@
-// routes/authRoutes.js
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-const upload = require('../middleware/upload');
+const image = require('../middleware/multerConfig');
 
 // =================== 🔐 Authentication =================== //
 
 // Register new user
-router.post('/register', upload.uploadSingle, authController.register);
+router.post('/register', image.uploadSingle, authController.register);
 
 // Login
 router.post('/login', authController.login);
 
-// Logout (dummy)
-router.post('/logout', (req, res) => {
-  res.status(200).json({ message: 'Logged out successfully' });
-});
+// Logout
+router.post('/logout', authController.logout);
+
+// Refresh token
+router.post('/refresh-token', authController.refreshToken);
 
 module.exports = router;
