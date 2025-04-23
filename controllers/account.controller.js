@@ -1,7 +1,7 @@
 // controllers/accountController.js
 const User = require('../models/User');
 
-// عرض معلومات الحساب للمستخدم الحالي
+
 exports.getAccount = async (req, res) => {
   try {
     const userId = req.user?.userId;
@@ -16,20 +16,14 @@ exports.getAccount = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.status(200).json({
-      success: true,
-      message: 'User data fetched successfully',
-      user,
-    });
-
-  } catch (err) {
-    console.error('Error in getAccount:', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error('Error fetching account:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 };
 
 
-// تحديث بيانات الحساب للمستخدم الحالي
 exports.updateAccount = async (req, res) => {
   try {
     const updates = req.body;
@@ -49,7 +43,7 @@ exports.updateAccount = async (req, res) => {
   }
 };
 
-// حذف الحساب للمستخدم الحالي
+
 exports.deleteAccount = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.user.userId);
@@ -61,3 +55,4 @@ exports.deleteAccount = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+

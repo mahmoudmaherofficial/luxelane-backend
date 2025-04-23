@@ -1,7 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
-// دالة لإنشاء التوكنات
 const createTokens = (user) => {
   const accessToken = jwt.sign(
     { userId: user._id, role: user.role },
@@ -18,17 +17,22 @@ const createTokens = (user) => {
   return { accessToken, refreshToken };
 };
 
-// دالة الموحدة للتعامل مع الأخطاء
 const handleError = (res, err, customMessage = null) => {
   const errorMessage = customMessage || err.message || 'An error occurred';
   return res.status(400).json({ error: errorMessage });
 };
 
 exports.register = async (req, res) => {
-  const { username, email, password } = req.body;
+  console.log('Register request body:', req.body);
+  console.log('Register file:', req.file);
+  const { username, email, password, confirm_password } = req.body;
 
-  if (!username || !email || !password) {
+  if (!username || !email || !password || !confirm_password) {
     return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  if (password !== confirm_password) {
+    return res.status(400).json({ error: 'Passwords do not match' });
   }
 
   try {
@@ -61,6 +65,12 @@ exports.register = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
+    res.cookie('accessToken', accessToken, {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000 // 15 minutes
+    });
+
     res.status(200).json({ accessToken, user });
   } catch (err) {
     handleError(res, err, 'Error occurred while registering the user');
@@ -68,6 +78,7 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  console.log('Login request body:', req.body);
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -94,6 +105,12 @@ exports.login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
+    res.cookie('accessToken', accessToken, {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000 // 15 minutes
+    });
+
     res.status(200).json({ accessToken, user });
   } catch (err) {
     handleError(res, err, 'Error occurred during login');
@@ -102,19 +119,23 @@ exports.login = async (req, res) => {
 
 exports.refreshToken = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
+  console.log('Refresh token received:', refreshToken ? 'Present' : 'Missing');
   if (!refreshToken) {
+    console.log('No refresh token provided');
     return res.status(401).json({ error: 'No refresh token provided' });
   }
 
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    console.log('Decoded refresh token:', decoded);
     const user = await User.findById(decoded.userId);
 
     if (!user) {
+      console.log('User not found for refresh token');
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const { accessToken, newRefreshToken } = createTokens(user);
+    const { accessToken, refreshToken: newRefreshToken } = createTokens(user);
 
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
@@ -123,8 +144,16 @@ exports.refreshToken = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
+    res.cookie('accessToken', accessToken, {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000 // 15 minutes
+    });
+
+    console.log('New access token issued');
     res.json({ accessToken });
   } catch (err) {
+    console.error('Refresh token error:', err.message);
     res.status(403).json({ error: 'Invalid refresh token' });
   }
 };
@@ -133,6 +162,10 @@ exports.logout = async (req, res) => {
   try {
     res.clearCookie('refreshToken', {
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+    res.clearCookie('accessToken', {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict'
     });
@@ -178,6 +211,10 @@ exports.deleteAccount = async (req, res) => {
 
     res.clearCookie('refreshToken', {
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+    res.clearCookie('accessToken', {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict'
     });
