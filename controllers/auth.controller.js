@@ -25,13 +25,13 @@ const handleError = (res, err, customMessage = null) => {
 exports.register = async (req, res) => {
   console.log('Register request body:', req.body);
   console.log('Register file:', req.file);
-  const { username, email, password, confirm_password } = req.body;
+  const { username, email, password, confirmPassword } = req.body;
 
-  if (!username || !email || !password || !confirm_password) {
+  if (!username || !email || !password || !confirmPassword) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  if (password !== confirm_password) {
+  if (password !== confirmPassword) {
     return res.status(400).json({ error: 'Passwords do not match' });
   }
 
@@ -46,13 +46,13 @@ exports.register = async (req, res) => {
       return res.status(400).json({ error: 'Email already exists' });
     }
 
-    const profile_image = req.file ? `/uploads/${req.file.filename}` : '';
+    const image = req.file ? `/uploads/${req.file.filename}` : '';
 
     const user = await User.create({
       username,
       email,
       password,
-      profile_image,
+      image,
       role: 2004
     });
 

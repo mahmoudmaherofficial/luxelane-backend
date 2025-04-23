@@ -1,0 +1,110 @@
+├── controllers
+│   ├── account.controller.js
+│   ├── auth.controller.js
+│   ├── category.controller.js
+│   ├── product.controller.js
+│   └── user.controller.js
+├── FILE-TREE.txt
+├── index.js
+├── middleware
+│   ├── authMiddleware.js
+│   └── multerConfig.js
+├── models
+│   ├── Category.js
+│   ├── Product.js
+│   └── User.js
+├── package-lock.json
+├── package.json
+├── public
+│   ├── home.html
+│   └── uploads
+│       ├── 1745115418611-Artboard 1.png
+│       ├── 1745115914483-Artboard 2.png
+│       ├── 1745116549187-Artboard 1.png
+│       ├── 1745116549193-image-placeholder.png
+│       ├── 1745117725948-Mahmoud Maher copy.jpg
+│       ├── 1745117725958-Mahmoud Maher.jpg
+│       ├── 1745117725963-retouch_2025011319013358.png
+│       ├── 1745118291713-IMG-20220619-WA0003.jpg
+│       ├── 1745118291714-IMG-20220619-WA0004.jpg
+│       ├── 1745118502247-IMG-20221201-WA0012.jpg
+│       ├── 1745118510155-IMG-20221201-WA0012.jpg
+│       ├── 1745118654367-IMG-20221201-WA0012.jpg
+│       ├── 1745118655723-IMG-20221201-WA0012.jpg
+│       ├── 1745118790739-IMG-20221201-WA0012.jpg
+│       ├── 1745118819451-IMG-20221201-WA0012.jpg
+│       ├── 1745120083569-wallpaperflare.com_wallpaper.jpg
+│       ├── 1745120083570-wallpaperflare.com_wallpaper1.jpg
+│       ├── 1745120088779-wallpaperflare.com_wallpaper.jpg
+│       ├── 1745120088780-wallpaperflare.com_wallpaper1.jpg
+│       ├── 1745120138589-wallpaperflare.com_wallpaper.jpg
+│       ├── 1745120138590-wallpaperflare.com_wallpaper1.jpg
+│       ├── 1745120145372-modern-black-friday-background-with-brush-stroke-frame.jpg
+│       ├── 1745120145376-wallpaperflare.com_wallpaper.jpg
+│       ├── 1745120145378-wallpaperflare.com_wallpaper1.jpg
+│       ├── 1745120240168-modern-black-friday-background-with-brush-stroke-frame.jpg
+│       ├── 1745120240172-wallpaperflare.com_wallpaper.jpg
+│       ├── 1745120240173-wallpaperflare.com_wallpaper1.jpg
+│       ├── 1745120850214-thumb-1920-1342533.jpeg
+│       ├── 1745120850215-ubuntu-4k-dq99yo6iwbbaovkx.jpg
+│       ├── 1745120850215-wallpaperflare.com_wallpaper.jpg
+│       ├── 1745120850219-wallpaperflare.com_wallpaper1.jpg
+│       ├── 1745120907825-Artboard 1.png
+│       ├── 1745120981386-red-black-brush-stroke-banner-background-perfect-canva.jpg
+│       ├── 1745162586438-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745163168854-Fe3bxnJiRvkMvdBCCVCl4s7PwFetRzEqajaOgIa9.jpg
+│       ├── 1745163740990-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745164558165-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745164953933-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745165461734-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745167719124-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745167843489-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745167843498-Fe3bxnJiRvkMvdBCCVCl4s7PwFetRzEqajaOgIa9.jpg
+│       ├── 1745171169406-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745173490160-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745193981619-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745205695774-charleston-denim-jeans-medium-wash-front-5418-2.jpg
+│       ├── 1745205806127-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745211384797-charleston-denim-jeans-medium-wash-front-5418-2.jpg
+│       ├── 1745211384801-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745213016061-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745216110118-charleston-denim-jeans-medium-wash-front-5418-2.jpg
+│       ├── 1745216110122-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745221655010-charleston-denim-jeans-medium-wash-front-5418-2.jpg
+│       ├── 1745223182971-charleston-denim-jeans-medium-wash-front-5418-2.jpg
+│       ├── 1745223182976-download.png
+│       ├── 1745223182980-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745223182992-footer-bg.png
+│       ├── 1745258751029-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745258804826-download.png
+│       ├── 1745258897485-Fe3bxnJiRvkMvdBCCVCl4s7PwFetRzEqajaOgIa9.jpg
+│       ├── 1745258930636-footer-bg.png
+│       ├── 1745258946844-Apue18wwbWov0ymPcRbEQYMXg1eDNTJn1nYPPC8e.png
+│       ├── 1745259628634-Apue18wwbWov0ymPcRbEQYMXg1eDNTJn1nYPPC8e.png
+│       ├── 1745259628635-breadcrumb.png
+│       ├── 1745259886106-Apue18wwbWov0ymPcRbEQYMXg1eDNTJn1nYPPC8e.png
+│       ├── 1745259886107-Fe3bxnJiRvkMvdBCCVCl4s7PwFetRzEqajaOgIa9.jpg
+│       ├── 1745260007976-charleston-denim-jeans-medium-wash-front-5418-2.jpg
+│       ├── 1745260007978-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745260063566-charleston-denim-jeans-medium-wash-front-5418-2.jpg
+│       ├── 1745260063567-footer-bg.png
+│       ├── 1745260393562-breadcrumb.png
+│       ├── 1745260480133-breadcrumb.png
+│       ├── 1745260480134-footer-bg.png
+│       ├── 1745260614126-Apue18wwbWov0ymPcRbEQYMXg1eDNTJn1nYPPC8e.png
+│       ├── 1745260983953-Fe3bxnJiRvkMvdBCCVCl4s7PwFetRzEqajaOgIa9.jpg
+│       ├── 1745341256617-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+│       ├── 1745341416774-download.png
+│       ├── 1745341416776-footer-bg.png
+│       ├── 1745341429178-breadcrumb.png
+│       ├── 1745343327092-charleston-denim-jeans-medium-wash-front-5418-2.jpg
+│       └── 1745343327096-DSC03910_4a8cb95a-542b-4e8c-a27f-1130a636708e.jpg
+├── routes
+│   ├── account.routes.js
+│   ├── auth.routes.js
+│   ├── category.routes.js
+│   ├── product.routes.js
+│   └── user.routes.js
+├── utils
+│   └── roles.js
+└── vercel.json
