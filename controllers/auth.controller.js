@@ -1,30 +1,17 @@
-const User = require('../models/User');
+const User = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 
-const createTokens = (user) => {
-  const accessToken = jwt.sign(
-    { userId: user._id, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: '15m' }
-  );
-
-  const refreshToken = jwt.sign(
-    { userId: user._id },
-    process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: '7d' }
-  );
-
-  return { accessToken, refreshToken };
-};
+const createTokens = (user) => ({
+  accessToken: jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '15m' }),
+  refreshToken: jwt.sign({ userId: user._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' }),
+});
 
 const handleError = (res, err, customMessage = null) => {
   const errorMessage = customMessage || err.message || 'An error occurred';
-  return res.status(400).json({ error: errorMessage });
+  return res.status(500).json({ error: errorMessage });
 };
 
 exports.register = async (req, res) => {
-  console.log('Register request body:', req.body);
-  console.log('Register file:', req.file);
   const { username, email, password, confirmPassword } = req.body;
 
   if (!username || !email || !password || !confirmPassword) {
@@ -36,23 +23,16 @@ exports.register = async (req, res) => {
   }
 
   try {
-    const usernameExists = await User.findOne({ username });
-    if (usernameExists) {
-      return res.status(400).json({ error: 'Username already exists' });
-    }
-
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ $or: [{ username }, { email }] });
     if (userExists) {
-      return res.status(400).json({ error: 'Email already exists' });
+      return res.status(409).json({ error: 'User already exists' });
     }
-
-    const image = req.file ? `/uploads/${req.file.filename}` : '';
 
     const user = await User.create({
       username,
       email,
       password,
-      image,
+      image: req.file ? `/uploads/${req.file.filename}` : '',
       role: 2004
     });
 
@@ -71,14 +51,13 @@ exports.register = async (req, res) => {
       maxAge: 15 * 60 * 1000 // 15 minutes
     });
 
-    res.status(200).json({ accessToken, user });
+    res.status(201).json({ accessToken, user });
   } catch (err) {
     handleError(res, err, 'Error occurred while registering the user');
   }
 };
 
 exports.login = async (req, res) => {
-  console.log('Login request body:', req.body);
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -88,12 +67,12 @@ exports.login = async (req, res) => {
   try {
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      return res.status(400).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'User not found' });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(400).json({ error: 'Invalid password' });
+      return res.status(401).json({ error: 'Invalid password' });
     }
 
     const { accessToken, refreshToken } = createTokens(user);
@@ -119,19 +98,15 @@ exports.login = async (req, res) => {
 
 exports.refreshToken = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-  console.log('Refresh token received:', refreshToken ? 'Present' : 'Missing');
   if (!refreshToken) {
-    console.log('No refresh token provided');
     return res.status(401).json({ error: 'No refresh token provided' });
   }
 
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    console.log('Decoded refresh token:', decoded);
     const user = await User.findById(decoded.userId);
 
     if (!user) {
-      console.log('User not found for refresh token');
       return res.status(404).json({ error: 'User not found' });
     }
 
@@ -150,10 +125,8 @@ exports.refreshToken = async (req, res) => {
       maxAge: 15 * 60 * 1000 // 15 minutes
     });
 
-    console.log('New access token issued');
     res.json({ accessToken });
   } catch (err) {
-    console.error('Refresh token error:', err.message);
     res.status(403).json({ error: 'Invalid refresh token' });
   }
 };
@@ -224,3 +197,4 @@ exports.deleteAccount = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
