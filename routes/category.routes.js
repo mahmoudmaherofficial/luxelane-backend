@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const categoryController = require('../controllers/category.controller');
-const authMiddleware = require('../middleware/authMiddleware');
+const authMiddleware = require('../middleware/auth.middleware');
 const { ROLES } = require('../utils/roles');
 
 // الحصول على كل التصنيفات (مفتوح للجميع)

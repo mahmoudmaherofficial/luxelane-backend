@@ -1,5 +1,5 @@
-const { getFileUrl } = require('../middleware/multerConfig');
-const Product = require('../models/Product');
+const { getFileUrl } = require('../config/multer.config');
+const Product = require('../models/product.model');
 const fs = require('fs')
 const path = require('path')
 

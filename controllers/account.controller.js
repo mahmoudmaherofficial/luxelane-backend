@@ -1,5 +1,5 @@
 // controllers/accountController.js
-const User = require('../models/User');
+const User = require('../models/user.model');
 
 
 exports.getAccount = async (req, res) => {
@@ -50,9 +50,15 @@ exports.deleteAccount = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
+
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    });
+
     res.json({ message: 'Account deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
   }
 };
-

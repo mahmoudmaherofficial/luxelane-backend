@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middleware/authMiddleware')
+const authMiddleware = require('../middleware/auth.middleware')
 const productController = require('../controllers/product.controller');
-const image = require('../middleware/multerConfig');
+const image = require('../config/multer.config');
 const { ROLES } = require('../utils/roles');
 
 router.get('/', productController.getAllProducts)
