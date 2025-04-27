@@ -81,7 +81,8 @@ exports.login = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      // signed: true // Add this option
     });
 
     res.cookie('accessToken', accessToken, {
@@ -97,7 +98,8 @@ exports.login = async (req, res) => {
 };
 
 exports.refreshToken = async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
+  const { refreshToken } = req.body;
+
   if (!refreshToken) {
     return res.status(401).json({ error: 'No refresh token provided' });
   }
@@ -107,29 +109,21 @@ exports.refreshToken = async (req, res) => {
     const user = await User.findById(decoded.userId);
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(403).json({ error: 'Invalid refresh token' });
     }
 
-    const { accessToken, refreshToken: newRefreshToken } = createTokens(user);
+    const { accessToken } = createTokens(user);
 
-    res.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
-
-    res.cookie('accessToken', accessToken, {
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 15 * 60 * 1000 // 15 minutes
-    });
-
-    res.json({ accessToken });
+    return res.status(200).json({ accessToken });
   } catch (err) {
-    res.status(403).json({ error: 'Invalid refresh token' });
+    if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
+      return res.status(403).json({ error: 'Invalid or expired refresh token' });
+    }
+
+    return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 exports.logout = async (req, res) => {
   try {
