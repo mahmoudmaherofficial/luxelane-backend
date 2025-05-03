@@ -3,23 +3,31 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const mongoose = require('./config/db.config'); // Import mongoose connection from config
+const mongoose = require('./config/db.config');
 
 // Load environment variables
 dotenv.config();
 
 // App init
 const app = express();
-app.use(express.urlencoded({ extended: true }));
 
 // Middlewares
+app.use(cookieParser()); // Must be before routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+  exposedHeaders: ['Set-Cookie'],
 }));
+
+// Log requests for debugging
+// app.use((req, res, next) => {
+//   console.log('Request:', req.method, req.url, 'Cookies:', req.cookies, 'Headers:', req.headers);
+//   next();
+// });
 
 // Serve static files
 app.use(express.static('public'));
@@ -37,11 +45,18 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'home.html'));
 });
 
+// Error handling
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  const message = err.message || 'Server error';
+  res.status(status).json({ error: message });
+});
+
 // Server
 const PORT = process.env.PORT || 5000;
 
 mongoose.connection.once('open', () => {
   app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
   });
 });

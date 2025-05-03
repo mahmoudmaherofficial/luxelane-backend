@@ -3,19 +3,25 @@ const User = require('../models/user.model');
 
 
 exports.getAccount = async (req, res) => {
+  console.log('GET /account - Start');
   try {
     const userId = req.user?.userId;
+    console.log('User ID from token:', userId);
 
     if (!userId) {
+      console.log('GET /account - Error: Missing user ID');
       return res.status(401).json({ error: 'Unauthorized: Missing user ID in token' });
     }
 
     const user = await User.findById(userId).select('-password');
+    console.log('Found user:', user);
 
     if (!user) {
+      console.log('GET /account - Error: User not found');
       return res.status(404).json({ error: 'User not found' });
     }
 
+    console.log('GET /account - Success');
     return res.status(200).json(user);
   } catch (error) {
     console.error('Error fetching account:', error);

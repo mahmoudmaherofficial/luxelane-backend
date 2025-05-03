@@ -6,13 +6,10 @@ const accountController = require('../controllers/account.controller');
 
 // =================== 👤 Account =================== //
 
-// عرض معلومات الحساب (المستخدم الذي قام بتسجيل الدخول فقط)
 router.get('/', authMiddleware(), accountController.getAccount);
 
-// تحديث بيانات الحساب (المستخدم الذي قام بتسجيل الدخول فقط)
 router.put('/', authMiddleware(), accountController.updateAccount);
 
-// حذف الحساب (المستخدم الذي قام بتسجيل الدخول فقط)
 router.delete('/', authMiddleware(), accountController.deleteAccount);
 
 module.exports = router;
