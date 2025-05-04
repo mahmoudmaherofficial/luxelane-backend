@@ -33,8 +33,38 @@ exports.getAccount = async (req, res) => {
 exports.updateAccount = async (req, res) => {
   try {
     const updates = req.body;
+    const userId = req.user.userId;
+
+    // Check if username already exists for another user
+    if (updates.username) {
+      const existingUsername = await User.findOne({
+        _id: { $ne: userId },
+        username: updates.username
+      });
+
+      if (existingUsername) {
+        return res.status(409).json({
+          error: 'Username is already in use'
+        });
+      }
+    }
+
+    // Check if email already exists for another user 
+    if (updates.email) {
+      const existingEmail = await User.findOne({
+        _id: { $ne: userId },
+        email: updates.email
+      });
+
+      if (existingEmail) {
+        return res.status(409).json({
+          error: 'Email is already in use'
+        });
+      }
+    }
+
     const user = await User.findByIdAndUpdate(
-      req.user.userId,
+      userId,
       updates,
       { new: true, runValidators: true }
     ).select('-password');

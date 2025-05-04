@@ -39,11 +39,10 @@ exports.register = async (req, res) => {
       return res.status(409).json({ error: 'User already exists' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
     const user = await User.create({
       username,
       email,
-      password: hashedPassword,
+      password,
       image: req.file ? `/uploads/${req.file.filename}` : '',
       role: 2004,
       tokenVersion: 0,
