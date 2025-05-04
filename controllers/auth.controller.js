@@ -1,7 +1,7 @@
 const User = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
+const { getFileUrl } = require('../config/multer.config');
 
 const createTokens = (user) => {
   const accessToken = jwt.sign(
@@ -43,7 +43,7 @@ exports.register = async (req, res) => {
       username,
       email,
       password,
-      image: req.file ? `/uploads/${req.file.filename}` : '',
+      image: req.file ? getFileUrl(req.file.filename) : '',
       role: 2004,
       tokenVersion: 0,
     });
@@ -116,7 +116,6 @@ exports.login = async (req, res) => {
 
 exports.refreshToken = async (req, res) => {
   const { refreshToken } = req.cookies;
-  console.log('refreshToken', refreshToken);
 
   if (!refreshToken) {
     return res.status(401).json({ error: 'No refresh token provided' });
@@ -155,33 +154,24 @@ exports.refreshToken = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    console.log('Logout initiated');
-
     res.clearCookie('accessToken', {
-      httpOnly: true, // Match how it was set
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
     });
-    console.log('Access token cookie cleared');
 
     res.clearCookie('refreshToken', {
-      httpOnly: true, // Ensure httpOnly matches
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      path: '/', // Match the original path
-      // domain: 'example.com', // Uncomment if explicitly set
+      path: '/',
     });
-    console.log('Refresh token cookie cleared');
 
-    // Clear user session
     req.user = null;
-    console.log('User session cleared');
 
     res.status(200).json({ message: 'Logged out successfully' });
-    console.log('Logout successful response sent');
   } catch (err) {
-    console.error('Error during logout', err);
     res.status(500).json({ error: 'Server error during logout' });
   }
 };

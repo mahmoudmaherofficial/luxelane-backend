@@ -23,12 +23,6 @@ app.use(cors({
   exposedHeaders: ['Set-Cookie'],
 }));
 
-// Log requests for debugging
-// app.use((req, res, next) => {
-//   console.log('Request:', req.method, req.url, 'Cookies:', req.cookies, 'Headers:', req.headers);
-//   next();
-// });
-
 // Serve static files
 app.use(express.static('public'));
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
@@ -57,6 +51,6 @@ const PORT = process.env.PORT || 5000;
 
 mongoose.connection.once('open', () => {
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT} 🚀`);
   });
 });
