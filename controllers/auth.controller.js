@@ -156,81 +156,117 @@ exports.refreshToken = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    if (req.user) {
-      const user = await User.findById(req.user.id);
-      if (user) {
-        user.tokenVersion = (user.tokenVersion || 0) + 1;
-        await user.save();
-      }
-    }
+    console.log('Logout initiated');
 
     res.clearCookie('accessToken', {
-      httpOnly: true,
+      httpOnly: true, // Match how it was set
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
     });
+    console.log('Access token cookie cleared');
+
     res.clearCookie('refreshToken', {
-      httpOnly: true,
+      httpOnly: true, // Ensure httpOnly matches
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      path: '/',
+      path: '/', // Match the original path
+      // domain: 'example.com', // Uncomment if explicitly set
     });
+    console.log('Refresh token cookie cleared');
+
+    // Clear user session
+    req.user = null;
+    console.log('User session cleared');
 
     res.status(200).json({ message: 'Logged out successfully' });
+    console.log('Logout successful response sent');
   } catch (err) {
-    handleError(res, err, 'Server error during logout');
+    console.error('Error during logout', err);
+    res.status(500).json({ error: 'Server error during logout' });
   }
 };
 
-exports.getAccount = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    if (!user) return res.status(404).json({ error: 'User not found' });
+// exports.logout = async (req, res) => {
+//   try {
+//     console.log('Logout initiated');
 
-    res.json(user);
-  } catch (err) {
-    handleError(res, err, 'Server error fetching account');
-  }
-};
+//     res.clearCookie('accessToken', {
+//       // httpOnly: true,
+//       secure: process.env.NODE_ENV === 'production',
+//       sameSite: 'lax',
+//       path: '/',
+//     });
+//     console.log('Access token cookie cleared');
 
-exports.updateAccount = async (req, res) => {
-  try {
-    const updates = req.body;
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      updates,
-      { new: true, runValidators: true }
-    ).select('-password');
+//     res.clearCookie('refreshToken', {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === 'production',
+//       sameSite: 'lax',
+//       path: '/',
+//     });
+//     console.log('Refresh token cookie cleared');
 
-    if (!user) return res.status(404).json({ error: 'User not found' });
+//     // Clear user session
+//     req.user = null;
+//     console.log('User session cleared');
 
-    res.json(user);
-  } catch (err) {
-    handleError(res, err, 'Server error updating account');
-  }
-};
+//     res.status(200).json({ message: 'Logged out successfully' });
+//     console.log('Logout successful response sent');
+//   } catch (err) {
+//     console.error('Error during logout', err);
+//     handleError(res, err, 'Server error during logout');
+//   }
+// };
 
-exports.deleteAccount = async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.user.id);
-    if (!user) return res.status(404).json({ error: 'User not found' });
+// exports.getAccount = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.user.id).select('-password');
+//     if (!user) return res.status(404).json({ error: 'User not found' });
 
-    res.clearCookie('accessToken', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-    });
-    res.clearCookie('refreshToken', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-    });
+//     res.json(user);
+//   } catch (err) {
+//     handleError(res, err, 'Server error fetching account');
+//   }
+// };
 
-    res.json({ message: 'Account deleted successfully' });
-  } catch (err) {
-    handleError(res, err, 'Server error deleting account');
-  }
-};
+// exports.updateAccount = async (req, res) => {
+//   try {
+//     const updates = req.body;
+//     const user = await User.findByIdAndUpdate(
+//       req.user.id,
+//       updates,
+//       { new: true, runValidators: true }
+//     ).select('-password');
+
+//     if (!user) return res.status(404).json({ error: 'User not found' });
+
+//     res.json(user);
+//   } catch (err) {
+//     handleError(res, err, 'Server error updating account');
+//   }
+// };
+
+// exports.deleteAccount = async (req, res) => {
+//   try {
+//     const user = await User.findByIdAndDelete(req.user.id);
+//     if (!user) return res.status(404).json({ error: 'User not found' });
+
+//     res.clearCookie('accessToken', {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === 'production',
+//       sameSite: 'lax',
+//       path: '/',
+//     });
+//     res.clearCookie('refreshToken', {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === 'production',
+//       sameSite: 'lax',
+//       path: '/',
+//     });
+
+//     res.json({ message: 'Account deleted successfully' });
+//   } catch (err) {
+//     handleError(res, err, 'Server error deleting account');
+//   }
+// };
