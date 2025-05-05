@@ -126,10 +126,22 @@ exports.refreshToken = async (req, res) => {
     const user = await User.findById(decoded.id);
 
     if (!user) {
+      res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+      });
       return res.status(403).json({ error: 'Invalid refresh token' });
     }
 
     if (decoded.tokenVersion !== (user.tokenVersion || 0)) {
+      res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+      });
       return res.status(403).json({ error: 'Invalid refresh token version' });
     }
 
@@ -146,6 +158,12 @@ exports.refreshToken = async (req, res) => {
     res.status(200).json({ accessToken });
   } catch (err) {
     if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
+      res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+      });
       return res.status(403).json({ error: 'Invalid or expired refresh token' });
     }
     return res.status(500).json({ error: 'Internal server error' });
