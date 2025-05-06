@@ -1,7 +1,7 @@
 const { getFileUrl } = require('../config/multer.config');
 const Product = require('../models/product.model');
-const fs = require('fs')
-const path = require('path')
+const fs = require('fs');
+const path = require('path');
 
 // Get all products
 exports.getAllProducts = async (req, res) => {
@@ -59,22 +59,22 @@ exports.getProduct = async (req, res) => {
 
 // Create product
 exports.createProduct = async (req, res) => {
-  const { name, price, stock, description, category, size } = req.body;
+  const { name, price, stock, description, category, size, colors } = req.body;
   const images = req.files;
 
-  if (!name || !price || !description || !category || !stock || !size) {
+  if (!name || !price || !description || !category || !stock || !size || !colors) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
   const fileUrls = images?.map((file) => getFileUrl(file.filename));
 
-  const standardOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  const standardSizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   const sortedSizes = [...size].sort((a, b) => {
     const upperA = a.toUpperCase();
     const upperB = b.toUpperCase();
 
-    const indexA = standardOrder.indexOf(upperA);
-    const indexB = standardOrder.indexOf(upperB);
+    const indexA = standardSizeOrder.indexOf(upperA);
+    const indexB = standardSizeOrder.indexOf(upperB);
 
     const extractNumber = (val) => {
       const match = val.match(/(\d+)/);
@@ -88,6 +88,8 @@ exports.createProduct = async (req, res) => {
     return extractNumber(upperA) - extractNumber(upperB);
   });
 
+  const sortedColors = [...colors].sort((a, b) => a.localeCompare(b));
+
   try {
     const newProduct = await Product.create({
       name,
@@ -96,7 +98,8 @@ exports.createProduct = async (req, res) => {
       price,
       stock,
       size: sortedSizes,
-      images: fileUrls,
+      colors: sortedColors,
+      images: fileUrls || [],
       createdBy: req.user.userId,
     });
 
@@ -116,24 +119,19 @@ exports.updateProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    const {
-      name,
-      price,
-      stock,
-      description,
-      size,
-      category,
-    } = req.body || {};
+    const { name, price, stock, description, size, colors, category } = req.body || {};
 
-    const standardOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    const standardSizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
     const sortedSizes = (Array.isArray(size) ? size : [size || existingProduct.size]).sort((a, b) => {
-      const indexA = standardOrder.indexOf(a.toUpperCase());
-      const indexB = standardOrder.indexOf(b.toUpperCase());
+      const indexA = standardSizeOrder.indexOf(a.toUpperCase());
+      const indexB = standardSizeOrder.indexOf(b.toUpperCase());
       return indexA !== -1 && indexB !== -1 ? indexA - indexB :
         indexA !== -1 ? -1 :
           indexB !== -1 ? 1 :
-            parseInt(a.match(/\d+/), 10) - parseInt(b.match(/\d+/), 10);
+            parseInt(a.match(/\d+/) || Infinity, 10) - parseInt(b.match(/\d+/) || Infinity, 10);
     });
+
+    const sortedColors = (Array.isArray(colors) ? colors : [colors || existingProduct.colors]).sort((a, b) => a.localeCompare(b));
 
     const updatedData = {
       name: name || existingProduct.name,
@@ -141,6 +139,7 @@ exports.updateProduct = async (req, res) => {
       stock: stock || existingProduct.stock,
       description: description || existingProduct.description,
       size: sortedSizes,
+      colors: sortedColors,
       category: category || existingProduct.category,
       images: [...existingProduct.images, ...(req.files ? req.files.map(file => getFileUrl(file.filename)) : [])],
     };
@@ -153,7 +152,6 @@ exports.updateProduct = async (req, res) => {
     res.status(500).json({ message: 'Error updating product' });
   }
 };
-
 
 // Delete Product Image
 exports.deleteProductImage = async (req, res) => {
@@ -168,10 +166,14 @@ exports.deleteProductImage = async (req, res) => {
       return fileName !== imageName;
     });
 
+    if (updatedImages.length === product.images.length) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+
     product.images = updatedImages;
     await product.save();
 
-    const imagePath = path.join(__dirname, '..', 'uploads', imageName);
+    const imagePath = path.join(__dirname, '..', 'Uploads', imageName);
     if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
 
     res.json({ message: 'Image deleted successfully' });
@@ -180,7 +182,6 @@ exports.deleteProductImage = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
 
 // Delete product
 exports.deleteProduct = async (req, res) => {
@@ -195,4 +196,3 @@ exports.deleteProduct = async (req, res) => {
     res.status(500).json({ error: 'Failed to delete product' });
   }
 };
-
