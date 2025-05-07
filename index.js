@@ -1,3 +1,4 @@
+// index.js
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -33,6 +34,7 @@ app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/account', require('./routes/account.routes'));
 app.use('/api/categories', require('./routes/category.routes'));
 app.use('/api/products', require('./routes/product.routes'));
+app.use('/api/orders', require('./routes/order.routes'));
 
 // Home route
 app.get('/', (req, res) => {
