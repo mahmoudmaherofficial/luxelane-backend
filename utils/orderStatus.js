@@ -1,0 +1,1 @@
+module.exports = ['pending', 'processing', 'confirmed', 'shipped', 'delivered', 'cancelled']

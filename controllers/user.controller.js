@@ -8,7 +8,7 @@ exports.getAllUsers = async (req, res) => {
     const limit = parseInt(req.query.limit)
 
     let users
-    let totalUsers = await User.countDocuments()
+    let totalItems = await User.countDocuments()
     let totalPages = 1
     let currentPage = 1
 
@@ -20,7 +20,7 @@ exports.getAllUsers = async (req, res) => {
         .skip(skip)
         .limit(limit)
 
-      totalPages = Math.ceil(totalUsers / limit)
+      totalPages = Math.ceil(totalItems / limit)
       currentPage = page
     } else {
       users = await User.find().select('-password')
@@ -28,7 +28,7 @@ exports.getAllUsers = async (req, res) => {
 
     res.json({
       data: users,
-      totalUsers,
+      totalItems,
       totalPages,
       currentPage,
     })

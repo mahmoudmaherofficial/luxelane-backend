@@ -1,6 +1,7 @@
 const Order = require('../models/order.model');
 const Product = require('../models/product.model');
 const User = require('../models/user.model');
+const orderStatus = require('../utils/orderStatus');
 
 // Create a new order
 exports.createOrder = async (req, res) => {
@@ -56,28 +57,52 @@ exports.createOrder = async (req, res) => {
 // Get all orders (admin or user-specific)
 exports.getOrders = async (req, res) => {
   try {
-    const { userId } = req.query;
+    const { page, limit } = req.query;
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+
     let orders;
+    let totalItems;
+    let totalPages = 1;
+    let currentPage = 1;
 
-    if (userId) {
-      // Get orders for a specific user
-      orders = await Order.find({ user: userId })
-        .populate('user', 'username email')
-        .populate('products.product', 'name price');
-    } else {
-      // Get all orders (admin)
-      orders = await Order.find()
-        .populate('user', 'username email')
-        .populate('products.product', 'name price');
-    }
+    // Get total number of orders
+    totalItems = await Order.countDocuments();
 
-    // Define the desired status order
-    const statusOrder = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    // Fetch all orders without pagination or sorting in the query
+    orders = await Order.find()
+      .populate('user', 'username email')
+      .populate('products.product', 'name price');
 
-    // Sort orders based on statusOrder
+    // Define the desired status order: pending first, cancelled/delivered last
+    const statusOrder = orderStatus;
+
+    // Sort orders in JavaScript based on statusOrder
     orders.sort((a, b) => statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status));
 
-    res.status(200).json(orders);
+    // Check if pagination is requested (both page and limit must be valid numbers)
+    const isPaginated = !isNaN(pageNum) && !isNaN(limitNum) && pageNum > 0 && limitNum > 0;
+
+    if (isPaginated) {
+      // Apply pagination in JavaScript after sorting
+      const startIndex = (pageNum - 1) * limitNum;
+      const endIndex = startIndex + limitNum;
+      orders = orders.slice(startIndex, endIndex);
+
+      totalPages = Math.ceil(totalItems / limitNum);
+      currentPage = pageNum;
+    } else {
+      // Set pagination metadata for non-paginated response
+      totalPages = 1; // Since all orders are returned, it's effectively 1 page
+      currentPage = 1;
+    }
+
+    res.status(200).json({
+      data: orders,
+      totalItems,
+      totalPages,
+      currentPage,
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching orders', error: error.message });
   }
@@ -127,7 +152,7 @@ exports.getCurrentUserOrders = async (req, res) => {
 exports.updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
-    const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    const validStatuses = orderStatus;
 
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: 'Invalid status' });

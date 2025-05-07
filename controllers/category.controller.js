@@ -2,9 +2,16 @@ const Category = require('../models/category.model');
 
 exports.createCategory = async (req, res) => {
   try {
+    const { name, description } = req.body;
+
+    const exists = await Category.findOne({ name });
+    if (exists) {
+      return res.status(400).json({ error: 'Category already exists' });
+    }
+
     const category = new Category({
-      name: req.body.name,
-      description: req.body.description,
+      name,
+      description,
       createdBy: req.user.userId,
     });
     await category.save();
@@ -27,13 +34,13 @@ exports.getAllCategories = async (req, res) => {
   try {
     const categories = await Category.find({}, null, options).sort({ createdAt: -1 });
 
-    const totalCategories = await Category.countDocuments();
-    const totalPages = limit ? Math.ceil(totalCategories / limit) : 1;
+    const totalItems = await Category.countDocuments();
+    const totalPages = limit ? Math.ceil(totalItems / limit) : 1;
     const currentPage = page ? parseInt(page, 10) : 1;
 
     res.json({
       data: categories,
-      totalCategories,
+      totalItems,
       totalPages,
       currentPage,
     });
