@@ -60,13 +60,11 @@ exports.getProduct = async (req, res) => {
 // Create product
 exports.createProduct = async (req, res) => {
   const { name, price, stock, description, category, size, colors } = req.body;
-  const images = req.files;
+  const imageUrls = req.imageUrls || []; // دي روابط الصور من Cloudinary
 
   if (!name || !price || !description || !category || !stock || !size || !colors) {
     return res.status(400).json({ error: 'All fields are required' });
   }
-
-  const fileUrls = images?.map((file) => getFileUrl(file.filename));
 
   const standardSizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   const sortedSizes = [...size].sort((a, b) => {
@@ -99,12 +97,13 @@ exports.createProduct = async (req, res) => {
       stock,
       size: sortedSizes,
       colors: sortedColors,
-      images: fileUrls || [],
+      images: imageUrls, // مباشرة بدون map
       createdBy: req.user.userId,
     });
 
     res.status(201).json(newProduct);
   } catch (error) {
+    console.error('Product creation error:', error);
     res.status(400).json({ error: 'Failed to create product' });
   }
 };
@@ -133,6 +132,8 @@ exports.updateProduct = async (req, res) => {
 
     const sortedColors = (Array.isArray(colors) ? colors : [colors || existingProduct.colors]).sort((a, b) => a.localeCompare(b));
 
+    const newImages = req.imageUrls || []; // روابط الصور الجديدة من Cloudinary
+
     const updatedData = {
       name: name || existingProduct.name,
       price: price || existingProduct.price,
@@ -141,7 +142,7 @@ exports.updateProduct = async (req, res) => {
       size: sortedSizes,
       colors: sortedColors,
       category: category || existingProduct.category,
-      images: [...existingProduct.images, ...(req.files ? req.files.map(file => getFileUrl(file.filename)) : [])],
+      images: [...existingProduct.images, ...newImages], // دمج الصور القديمة مع الجديدة
     };
 
     Object.assign(existingProduct, updatedData);
@@ -149,6 +150,7 @@ exports.updateProduct = async (req, res) => {
 
     res.status(200).json(updatedProduct);
   } catch (err) {
+    console.error('Update error:', err);
     res.status(500).json({ message: 'Error updating product' });
   }
 };

@@ -43,7 +43,7 @@ exports.register = async (req, res) => {
       username,
       email,
       password,
-      image: req.file ? getFileUrl(req.file.filename) : '',
+      image: req.imageUrl || '',
       role: 2004,
       tokenVersion: 0,
     });
