@@ -93,6 +93,7 @@ exports.login = async (req, res) => {
     }
 
     const { accessToken, refreshToken } = createTokens(user);
+    console.log('Tokens generated:', { accessToken: !!accessToken, refreshToken: !!refreshToken });
 
     res.cookie('accessToken', accessToken, {
       // httpOnly: true,
@@ -100,6 +101,7 @@ exports.login = async (req, res) => {
       sameSite: 'lax',
       maxAge: 15 * 60 * 1000,
       path: '/',
+      domain: process.env.COOKIE_DOMAIN || undefined
     });
 
     res.cookie('refreshToken', refreshToken, {
@@ -108,7 +110,10 @@ exports.login = async (req, res) => {
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/',
+      domain: process.env.COOKIE_DOMAIN || undefined
     });
+
+    console.log('Cookies set:', res.getHeaders()['set-cookie']);
 
     res.status(200).json({ accessToken, user: { id: user._id, username: user.username, email, role: user.role } });
   } catch (err) {
