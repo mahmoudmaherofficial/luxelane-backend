@@ -97,9 +97,10 @@ exports.login = async (req, res) => {
     res.cookie('accessToken', accessToken, {
       // httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      // sameSite: 'lax',
+      sameSite: 'lax',
       maxAge: 15 * 60 * 1000,
       path: '/',
+      signed: true,
     });
 
     res.cookie('refreshToken', refreshToken, {
