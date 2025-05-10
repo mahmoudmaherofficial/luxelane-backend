@@ -100,7 +100,6 @@ exports.login = async (req, res) => {
       sameSite: 'lax',
       maxAge: 15 * 60 * 1000,
       path: '/',
-      signed: true,
     });
 
     res.cookie('refreshToken', refreshToken, {
