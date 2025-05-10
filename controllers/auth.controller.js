@@ -39,7 +39,7 @@ exports.register = async (req, res) => {
       return res.status(409).json({ error: 'User already exists' });
     }
 
-    const user = await User.create({
+    const user = new User({
       username,
       email,
       password,
@@ -47,6 +47,8 @@ exports.register = async (req, res) => {
       role: 2004,
       tokenVersion: 0,
     });
+
+    await user.save();
 
     const { accessToken, refreshToken } = createTokens(user);
 
@@ -93,21 +95,19 @@ exports.login = async (req, res) => {
     const { accessToken, refreshToken } = createTokens(user);
 
     res.cookie('accessToken', accessToken, {
-      // httpOnly: true,
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      sameSite: 'lax',
       maxAge: 15 * 60 * 1000,
       path: '/',
-      domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : 'localhost'
     });
-    
+
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/',
-      domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : 'localhost'
     });
 
     res.status(200).json({ accessToken, user: { id: user._id, username: user.username, email, role: user.role } });
@@ -150,7 +150,7 @@ exports.refreshToken = async (req, res) => {
     const { accessToken } = createTokens(user);
 
     res.cookie('accessToken', accessToken, {
-      // httpOnly: true,
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 15 * 60 * 1000,
@@ -195,87 +195,3 @@ exports.logout = async (req, res) => {
     res.status(500).json({ error: 'Server error during logout' });
   }
 };
-
-// exports.logout = async (req, res) => {
-//   try {
-//     console.log('Logout initiated');
-
-//     res.clearCookie('accessToken', {
-//       // httpOnly: true,
-//       secure: process.env.NODE_ENV === 'production',
-//       sameSite: 'lax',
-//       path: '/',
-//     });
-//     console.log('Access token cookie cleared');
-
-//     res.clearCookie('refreshToken', {
-//       httpOnly: true,
-//       secure: process.env.NODE_ENV === 'production',
-//       sameSite: 'lax',
-//       path: '/',
-//     });
-//     console.log('Refresh token cookie cleared');
-
-//     // Clear user session
-//     req.user = null;
-//     console.log('User session cleared');
-
-//     res.status(200).json({ message: 'Logged out successfully' });
-//     console.log('Logout successful response sent');
-//   } catch (err) {
-//     console.error('Error during logout', err);
-//     handleError(res, err, 'Server error during logout');
-//   }
-// };
-
-// exports.getAccount = async (req, res) => {
-//   try {
-//     const user = await User.findById(req.user.id).select('-password');
-//     if (!user) return res.status(404).json({ error: 'User not found' });
-
-//     res.json(user);
-//   } catch (err) {
-//     handleError(res, err, 'Server error fetching account');
-//   }
-// };
-
-// exports.updateAccount = async (req, res) => {
-//   try {
-//     const updates = req.body;
-//     const user = await User.findByIdAndUpdate(
-//       req.user.id,
-//       updates,
-//       { new: true, runValidators: true }
-//     ).select('-password');
-
-//     if (!user) return res.status(404).json({ error: 'User not found' });
-
-//     res.json(user);
-//   } catch (err) {
-//     handleError(res, err, 'Server error updating account');
-//   }
-// };
-
-// exports.deleteAccount = async (req, res) => {
-//   try {
-//     const user = await User.findByIdAndDelete(req.user.id);
-//     if (!user) return res.status(404).json({ error: 'User not found' });
-
-//     res.clearCookie('accessToken', {
-//       httpOnly: true,
-//       secure: process.env.NODE_ENV === 'production',
-//       sameSite: 'lax',
-//       path: '/',
-//     });
-//     res.clearCookie('refreshToken', {
-//       httpOnly: true,
-//       secure: process.env.NODE_ENV === 'production',
-//       sameSite: 'lax',
-//       path: '/',
-//     });
-
-//     res.json({ message: 'Account deleted successfully' });
-//   } catch (err) {
-//     handleError(res, err, 'Server error deleting account');
-//   }
-// };
