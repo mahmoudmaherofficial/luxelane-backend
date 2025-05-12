@@ -59,7 +59,7 @@ exports.getProduct = async (req, res) => {
 
 // Create product
 exports.createProduct = async (req, res) => {
-  const { name, price, stock, description, category, size, colors } = req.body;
+  const { name, price, discount, stock, description, category, size, colors } = req.body;
   const imageUrls = req.imageUrls || []; // دي روابط الصور من Cloudinary
 
   if (!name || !price || !description || !category || !stock || !size || !colors) {
@@ -94,6 +94,7 @@ exports.createProduct = async (req, res) => {
       description,
       category,
       price,
+      discount,
       stock,
       size: sortedSizes,
       colors: sortedColors,
@@ -118,7 +119,7 @@ exports.updateProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    const { name, price, stock, description, size, colors, category } = req.body || {};
+    const { name, price, discount, stock, description, size, colors, category } = req.body || {};
 
     const standardSizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
     const sortedSizes = (Array.isArray(size) ? size : [size || existingProduct.size]).sort((a, b) => {
@@ -137,6 +138,7 @@ exports.updateProduct = async (req, res) => {
     const updatedData = {
       name: name || existingProduct.name,
       price: price || existingProduct.price,
+      discount: discount || existingProduct.discount,
       stock: stock || existingProduct.stock,
       description: description || existingProduct.description,
       size: sortedSizes,
