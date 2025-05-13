@@ -52,9 +52,9 @@ exports.register = async (req, res) => {
     const { accessToken, refreshToken } = createTokens(user);
 
     res.cookie('accessToken', accessToken, {
-      // httpOnly: true,
+      httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
       maxAge: 15 * 60 * 1000,
       path: '/'
     });
@@ -62,7 +62,7 @@ exports.register = async (req, res) => {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/'
     });
@@ -95,9 +95,9 @@ exports.login = async (req, res) => {
     console.log('Tokens generated:', { accessToken: !!accessToken, refreshToken: !!refreshToken });
 
     res.cookie('accessToken', accessToken, {
-      // httpOnly: true,
+      httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
       maxAge: 15 * 60 * 1000,
       path: '/'
     });
@@ -105,7 +105,7 @@ exports.login = async (req, res) => {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/'
     });
@@ -133,7 +133,7 @@ exports.refreshToken = async (req, res) => {
       res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: true,
-        sameSite: 'strict',
+        sameSite: 'none',
         path: '/'
       });
       return res.status(403).json({ error: 'Invalid refresh token' });
@@ -143,7 +143,7 @@ exports.refreshToken = async (req, res) => {
       res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: true,
-        sameSite: 'strict',
+        sameSite: 'none',
         path: '/'
       });
       return res.status(403).json({ error: 'Invalid refresh token version' });
@@ -152,9 +152,9 @@ exports.refreshToken = async (req, res) => {
     const { accessToken } = createTokens(user);
 
     res.cookie('accessToken', accessToken, {
-      // httpOnly: true,
+      httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
       maxAge: 15 * 60 * 1000,
       path: '/'
     });
@@ -165,7 +165,7 @@ exports.refreshToken = async (req, res) => {
       res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: true,
-        sameSite: 'strict',
+        sameSite: 'none',
         path: '/'
       });
       return res.status(403).json({ error: 'Invalid or expired refresh token' });
@@ -177,16 +177,16 @@ exports.refreshToken = async (req, res) => {
 exports.logout = async (req, res) => {
   try {
     res.clearCookie('accessToken', {
-      // httpOnly: true,
+      httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
       path: '/'
     });
 
     res.clearCookie('refreshToken', {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
       path: '/'
     });
 
