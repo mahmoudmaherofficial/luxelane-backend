@@ -53,7 +53,7 @@ exports.register = async (req, res) => {
     const { accessToken, refreshToken } = createTokens(user);
 
     res.cookie('accessToken', accessToken, {
-      httpOnly: true,
+      // httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: 15 * 60 * 1000,
@@ -96,7 +96,7 @@ exports.login = async (req, res) => {
     console.log('Tokens generated:', { accessToken: !!accessToken, refreshToken: !!refreshToken });
 
     res.cookie('accessToken', accessToken, {
-      httpOnly: true,
+      // httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: 15 * 60 * 1000,
@@ -153,7 +153,7 @@ exports.refreshToken = async (req, res) => {
     const { accessToken } = createTokens(user);
 
     res.cookie('accessToken', accessToken, {
-      httpOnly: true,
+      // httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: 15 * 60 * 1000,
@@ -178,7 +178,7 @@ exports.refreshToken = async (req, res) => {
 exports.logout = async (req, res) => {
   try {
     res.clearCookie('accessToken', {
-      httpOnly: true,
+      // httpOnly: true,
       secure: true,
       sameSite: 'none',
       path: '/'
