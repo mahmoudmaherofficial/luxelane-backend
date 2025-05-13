@@ -57,7 +57,7 @@ exports.register = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 15 * 60 * 1000,
-      path: '/',
+      path: '/'
     });
 
     res.cookie('refreshToken', refreshToken, {
@@ -65,7 +65,7 @@ exports.register = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: '/',
+      path: '/'
     });
 
     res.status(201).json({ accessToken, user: { id: user._id, username, email, role: user.role } });
@@ -96,12 +96,11 @@ exports.login = async (req, res) => {
     console.log('Tokens generated:', { accessToken: !!accessToken, refreshToken: !!refreshToken });
 
     res.cookie('accessToken', accessToken, {
-      // httpOnly: true,
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 15 * 60 * 1000,
-      path: '/',
-      domain: process.env.COOKIE_DOMAIN || undefined
+      path: '/'
     });
 
     res.cookie('refreshToken', refreshToken, {
@@ -109,8 +108,7 @@ exports.login = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: '/',
-      domain: process.env.COOKIE_DOMAIN || undefined
+      path: '/'
     });
 
     console.log('Cookies set:', res.getHeaders()['set-cookie']);
@@ -159,7 +157,7 @@ exports.refreshToken = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 15 * 60 * 1000,
-      path: '/',
+      path: '/'
     });
 
     res.status(200).json({ accessToken });
@@ -183,14 +181,14 @@ exports.logout = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      path: '/',
+      path: '/'
     });
 
     res.clearCookie('refreshToken', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      path: '/',
+      path: '/'
     });
 
     req.user = null;
