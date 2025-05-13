@@ -1,7 +1,6 @@
 const User = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { getFileUrl } = require('../config/multer.config');
 
 const createTokens = (user) => {
   const accessToken = jwt.sign(
@@ -54,7 +53,7 @@ exports.register = async (req, res) => {
 
     res.cookie('accessToken', accessToken, {
       // httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: 'none',
       maxAge: 15 * 60 * 1000,
       path: '/'
@@ -97,7 +96,7 @@ exports.login = async (req, res) => {
 
     res.cookie('accessToken', accessToken, {
       // httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: 'none',
       maxAge: 15 * 60 * 1000,
       path: '/'
@@ -154,7 +153,7 @@ exports.refreshToken = async (req, res) => {
 
     res.cookie('accessToken', accessToken, {
       // httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: 'none',
       maxAge: 15 * 60 * 1000,
       path: '/'
@@ -179,7 +178,7 @@ exports.logout = async (req, res) => {
   try {
     res.clearCookie('accessToken', {
       // httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: 'none',
       path: '/'
     });
