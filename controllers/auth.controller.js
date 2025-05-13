@@ -52,7 +52,7 @@ exports.register = async (req, res) => {
     const { accessToken, refreshToken } = createTokens(user);
 
     res.cookie('accessToken', accessToken, {
-      httpOnly: true,
+      // httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: 15 * 60 * 1000,
@@ -60,7 +60,7 @@ exports.register = async (req, res) => {
     });
 
     res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
+      // httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -95,7 +95,7 @@ exports.login = async (req, res) => {
     console.log('Tokens generated:', { accessToken: !!accessToken, refreshToken: !!refreshToken });
 
     res.cookie('accessToken', accessToken, {
-      httpOnly: true,
+      // httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: 15 * 60 * 1000,
@@ -103,7 +103,7 @@ exports.login = async (req, res) => {
     });
 
     res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
+      // httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -131,7 +131,7 @@ exports.refreshToken = async (req, res) => {
 
     if (!user) {
       res.clearCookie('refreshToken', {
-        httpOnly: true,
+        // httpOnly: true,
         secure: true,
         sameSite: 'none',
         path: '/'
@@ -141,7 +141,7 @@ exports.refreshToken = async (req, res) => {
 
     if (decoded.tokenVersion !== (user.tokenVersion || 0)) {
       res.clearCookie('refreshToken', {
-        httpOnly: true,
+        // httpOnly: true,
         secure: true,
         sameSite: 'none',
         path: '/'
@@ -152,7 +152,7 @@ exports.refreshToken = async (req, res) => {
     const { accessToken } = createTokens(user);
 
     res.cookie('accessToken', accessToken, {
-      httpOnly: true,
+      // httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: 15 * 60 * 1000,
@@ -163,7 +163,7 @@ exports.refreshToken = async (req, res) => {
   } catch (err) {
     if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
       res.clearCookie('refreshToken', {
-        httpOnly: true,
+        // httpOnly: true,
         secure: true,
         sameSite: 'none',
         path: '/'
@@ -177,14 +177,14 @@ exports.refreshToken = async (req, res) => {
 exports.logout = async (req, res) => {
   try {
     res.clearCookie('accessToken', {
-      httpOnly: true,
+      // httpOnly: true,
       secure: true,
       sameSite: 'none',
       path: '/'
     });
 
     res.clearCookie('refreshToken', {
-      httpOnly: true,
+      // httpOnly: true,
       secure: true,
       sameSite: 'none',
       path: '/'
