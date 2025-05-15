@@ -54,7 +54,7 @@ exports.register = async (req, res) => {
     res.cookie('accessToken', accessToken, {
       // httpOnly: true,
       // secure: true,
-      sameSite: 'lax',
+      sameSite: 'strict',
       maxAge: 15 * 60 * 1000,
       path: '/'
     });
@@ -62,7 +62,7 @@ exports.register = async (req, res) => {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       // secure: true,
-      sameSite: 'lax',
+      sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/'
     });
@@ -97,7 +97,7 @@ exports.login = async (req, res) => {
     res.cookie('accessToken', accessToken, {
       // httpOnly: true,
       // secure: true,
-      sameSite: 'lax',
+      sameSite: 'strict',
       maxAge: 15 * 60 * 1000,
       path: '/'
     });
@@ -105,7 +105,7 @@ exports.login = async (req, res) => {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       // secure: true,
-      sameSite: 'lax',
+      sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/'
     });
@@ -156,7 +156,7 @@ exports.refreshToken = async (req, res) => {
     res.cookie('accessToken', accessToken, {
       // httpOnly: true,
       // secure: true,
-      sameSite: 'lax',
+      sameSite: 'strict',
       maxAge: 15 * 60 * 1000,
       path: '/'
     });
@@ -182,14 +182,14 @@ exports.logout = async (req, res) => {
     res.clearCookie('accessToken', {
       // httpOnly: true,
       // secure: true,
-      sameSite: 'lax',
+      sameSite: 'strict',
       path: '/'
     });
 
     res.clearCookie('refreshToken', {
       httpOnly: true,
       // secure: true,
-      sameSite: 'lax',
+      sameSite: 'strict',
       path: '/'
     });
 
