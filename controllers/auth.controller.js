@@ -56,7 +56,8 @@ exports.register = async (req, res) => {
       secure: true,
       sameSite: 'none',
       maxAge: 15 * 60 * 1000,
-      path: '/'
+      path: '/',
+      domain: '.vercel.app'
     });
 
     res.cookie('refreshToken', refreshToken, {
@@ -64,7 +65,8 @@ exports.register = async (req, res) => {
       secure: true,
       sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: '/'
+      path: '/',
+      domain: '.vercel.app'
     });
 
     res.status(201).json({ accessToken, user: { id: user._id, username, email, role: user.role } });
@@ -99,7 +101,8 @@ exports.login = async (req, res) => {
       secure: true,
       sameSite: 'none',
       maxAge: 15 * 60 * 1000,
-      path: '/'
+      path: '/',
+      domain: '.vercel.app'
     });
 
     res.cookie('refreshToken', refreshToken, {
@@ -107,7 +110,8 @@ exports.login = async (req, res) => {
       secure: true,
       sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: '/'
+      path: '/',
+      domain: '.vercel.app'
     });
 
     console.log('Cookies set:', res.getHeaders()['set-cookie']);
@@ -134,7 +138,8 @@ exports.refreshToken = async (req, res) => {
         // httpOnly: true,
         secure: true,
         sameSite: 'none',
-        path: '/'
+        path: '/',
+        domain: '.vercel.app'
       });
       return res.status(403).json({ error: 'Invalid refresh token' });
     }
@@ -144,7 +149,8 @@ exports.refreshToken = async (req, res) => {
         // httpOnly: true,
         secure: true,
         sameSite: 'none',
-        path: '/'
+        path: '/',
+        domain: '.vercel.app'
       });
       return res.status(403).json({ error: 'Invalid refresh token version' });
     }
@@ -156,7 +162,8 @@ exports.refreshToken = async (req, res) => {
       secure: true,
       sameSite: 'none',
       maxAge: 15 * 60 * 1000,
-      path: '/'
+      path: '/',
+      domain: '.vercel.app'
     });
 
     res.status(200).json({ accessToken });
@@ -166,7 +173,8 @@ exports.refreshToken = async (req, res) => {
         // httpOnly: true,
         secure: true,
         sameSite: 'none',
-        path: '/'
+        path: '/',
+        domain: '.vercel.app'
       });
       return res.status(403).json({ error: 'Invalid or expired refresh token' });
     }
@@ -180,14 +188,16 @@ exports.logout = async (req, res) => {
       // httpOnly: true,
       secure: true,
       sameSite: 'none',
-      path: '/'
+      path: '/',
+      domain: '.vercel.app'
     });
 
     res.clearCookie('refreshToken', {
       // httpOnly: true,
       secure: true,
       sameSite: 'none',
-      path: '/'
+      path: '/',
+      domain: '.vercel.app'
     });
 
     req.user = null;
