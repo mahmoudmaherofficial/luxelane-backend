@@ -53,16 +53,16 @@ exports.register = async (req, res) => {
 
     res.cookie('accessToken', accessToken, {
       // httpOnly: true,
-      // secure: true,
-      sameSite: 'none',
+      secure: true,
+      sameSite: 'lax',
       maxAge: 15 * 60 * 1000,
       path: '/'
     });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      // secure: true,
-      sameSite: 'none',
+      secure: true,
+      sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/'
     });
@@ -96,16 +96,16 @@ exports.login = async (req, res) => {
 
     res.cookie('accessToken', accessToken, {
       // httpOnly: true,
-      // secure: true,
-      sameSite: 'none',
+      secure: true,
+      sameSite: 'lax',
       maxAge: 15 * 60 * 1000,
       path: '/'
     });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      // secure: true,
-      sameSite: 'none',
+      secure: true,
+      sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/'
     });
@@ -133,7 +133,7 @@ exports.refreshToken = async (req, res) => {
       res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: true,
-        sameSite: 'none',
+        sameSite: 'lax',
         path: '/',
         domain: '.vercel.app'
       });
@@ -144,7 +144,7 @@ exports.refreshToken = async (req, res) => {
       res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: true,
-        sameSite: 'none',
+        sameSite: 'lax',
         path: '/',
         domain: '.vercel.app'
       });
@@ -155,8 +155,8 @@ exports.refreshToken = async (req, res) => {
 
     res.cookie('accessToken', accessToken, {
       // httpOnly: true,
-      // secure: true,
-      sameSite: 'none',
+      secure: true,
+      sameSite: 'lax',
       maxAge: 15 * 60 * 1000,
       path: '/'
     });
@@ -167,7 +167,7 @@ exports.refreshToken = async (req, res) => {
       res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: true,
-        sameSite: 'none',
+        sameSite: 'lax',
         path: '/',
         domain: '.vercel.app'
       });
@@ -181,15 +181,15 @@ exports.logout = async (req, res) => {
   try {
     res.clearCookie('accessToken', {
       // httpOnly: true,
-      // secure: true,
-      sameSite: 'none',
+      secure: true,
+      sameSite: 'lax',
       path: '/'
     });
 
     res.clearCookie('refreshToken', {
       httpOnly: true,
-      // secure: true,
-      sameSite: 'none',
+      secure: true,
+      sameSite: 'lax',
       path: '/'
     });
 
