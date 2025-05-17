@@ -56,15 +56,15 @@ exports.register = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 15 * 60 * 1000,
-      path: '/'
+      path: '/', domain: '.code404.site'
     });
 
     res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
+      // httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: '/'
+      path: '/', domain: '.code404.site'
     });
 
     res.status(201).json({ accessToken, user: { id: user._id, username, email, role: user.role } });
@@ -99,15 +99,15 @@ exports.login = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 15 * 60 * 1000,
-      path: '/'
+      path: '/', domain: '.code404.site'
     });
 
     res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
+      // httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: '/'
+      path: '/', domain: '.code404.site'
     });
 
     console.log('Cookies set:', res.getHeaders()['set-cookie']);
@@ -131,22 +131,21 @@ exports.refreshToken = async (req, res) => {
 
     if (!user) {
       res.clearCookie('refreshToken', {
-        httpOnly: true,
+        // httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: '/',
-        domain: '.vercel.app'
+        domain: '.code404.site'
       });
       return res.status(403).json({ error: 'Invalid refresh token' });
     }
 
     if (decoded.tokenVersion !== (user.tokenVersion || 0)) {
       res.clearCookie('refreshToken', {
-        httpOnly: true,
+        // httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        path: '/',
-        domain: '.vercel.app'
+        path: '/', domain: '.code404.site'
       });
       return res.status(403).json({ error: 'Invalid refresh token version' });
     }
@@ -158,18 +157,17 @@ exports.refreshToken = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 15 * 60 * 1000,
-      path: '/'
+      path: '/', domain: '.code404.site'
     });
 
     res.status(200).json({ accessToken });
   } catch (err) {
     if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
       res.clearCookie('refreshToken', {
-        httpOnly: true,
+        // httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        path: '/',
-        domain: '.vercel.app'
+        path: '/', domain: '.code404.site'
       });
       return res.status(403).json({ error: 'Invalid or expired refresh token' });
     }
@@ -183,14 +181,14 @@ exports.logout = async (req, res) => {
       // httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      path: '/'
+      path: '/', domain: '.code404.site'
     });
 
     res.clearCookie('refreshToken', {
-      httpOnly: true,
+      // httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      path: '/'
+      path: '/', domain: '.code404.site'
     });
 
     req.user = null;
