@@ -56,7 +56,7 @@ exports.register = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 15 * 60 * 1000,
-      path: '/', domain: '.code404.site'
+      path: '/', domain: process.env.DOMAIN
     });
 
     res.cookie('refreshToken', refreshToken, {
@@ -64,7 +64,7 @@ exports.register = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: '/', domain: '.code404.site'
+      path: '/', domain: process.env.DOMAIN
     });
 
     res.status(201).json({ accessToken, user: { id: user._id, username, email, role: user.role } });
@@ -99,7 +99,7 @@ exports.login = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 15 * 60 * 1000,
-      path: '/', domain: '.code404.site'
+      path: '/', domain: process.env.DOMAIN
     });
 
     res.cookie('refreshToken', refreshToken, {
@@ -107,7 +107,7 @@ exports.login = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: '/', domain: '.code404.site'
+      path: '/', domain: process.env.DOMAIN
     });
 
     console.log('Cookies set:', res.getHeaders()['set-cookie']);
@@ -135,7 +135,7 @@ exports.refreshToken = async (req, res) => {
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: '/',
-        domain: '.code404.site'
+        domain: process.env.DOMAIN
       });
       return res.status(403).json({ error: 'Invalid refresh token' });
     }
@@ -145,7 +145,7 @@ exports.refreshToken = async (req, res) => {
         // httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        path: '/', domain: '.code404.site'
+        path: '/', domain: process.env.DOMAIN
       });
       return res.status(403).json({ error: 'Invalid refresh token version' });
     }
@@ -157,7 +157,7 @@ exports.refreshToken = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 15 * 60 * 1000,
-      path: '/', domain: '.code404.site'
+      path: '/', domain: process.env.DOMAIN
     });
 
     res.status(200).json({ accessToken });
@@ -167,7 +167,7 @@ exports.refreshToken = async (req, res) => {
         // httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        path: '/', domain: '.code404.site'
+        path: '/', domain: process.env.DOMAIN
       });
       return res.status(403).json({ error: 'Invalid or expired refresh token' });
     }
@@ -181,14 +181,14 @@ exports.logout = async (req, res) => {
       // httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      path: '/', domain: '.code404.site'
+      path: '/', domain: process.env.DOMAIN
     });
 
     res.clearCookie('refreshToken', {
       // httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      path: '/', domain: '.code404.site'
+      path: '/', domain: process.env.DOMAIN
     });
 
     req.user = null;
