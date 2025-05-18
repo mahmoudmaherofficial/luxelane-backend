@@ -21,13 +21,19 @@ const orderSchema = new mongoose.Schema({
     price: {
       type: Number,
       required: true,
-      min: 0
+      min: 0 // Price after discount
+    },
+    discount: {
+      type: Number,
+      required: true,
+      min: 0,
+      default: 0 // Discount amount applied
     }
   }],
   totalAmount: {
     type: Number,
     required: true,
-    min: 0
+    min: 0 // Total after discounts
   },
   status: {
     type: String,

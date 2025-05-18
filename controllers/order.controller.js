@@ -6,7 +6,7 @@ const orderStatus = require('../utils/orderStatus');
 // Create a new order
 exports.createOrder = async (req, res) => {
   try {
-    const { userId, products, address, phoneNumber, secondaryPhoneNumber } = req.body;
+    const { userId, products, totalAmount, address, phoneNumber, secondaryPhoneNumber } = req.body;
 
     // Validate user
     const user = await User.findById(userId);
@@ -15,7 +15,7 @@ exports.createOrder = async (req, res) => {
     }
 
     // Validate products and calculate total amount
-    let totalAmount = 0;
+    let calculatedTotal = 0;
     const validatedProducts = [];
     for (const item of products) {
       const product = await Product.findById(item.product);
@@ -25,23 +25,35 @@ exports.createOrder = async (req, res) => {
       if (product.stock < item.quantity) {
         return res.status(400).json({ message: `Insufficient stock for product ${product.name}` });
       }
+      const discount = product.discount || 0;
+      const discountedPrice = product.price - discount;
+      // Allow minor floating-point differences (e.g., 79.999 vs 80.00)
+      if (Math.abs(item.price - discountedPrice) > 0.01) {
+        return res.status(400).json({ message: `Invalid price for product ${product.name}: expected ${discountedPrice}, got ${item.price}` });
+      }
       validatedProducts.push({
         product: item.product,
         quantity: item.quantity,
-        price: product.price
+        price: discountedPrice,
+        discount: discount
       });
-      totalAmount += product.price * item.quantity;
+      calculatedTotal += discountedPrice * item.quantity;
 
       // Update product stock
       product.stock -= item.quantity;
       await product.save();
     }
 
+    // Validate totalAmount
+    if (Math.abs(calculatedTotal - totalAmount) > 0.01) {
+      return res.status(400).json({ message: `Total amount mismatch: expected ${calculatedTotal.toFixed(2)}, got ${totalAmount}` });
+    }
+
     // Create order
     const order = new Order({
       user: userId,
       products: validatedProducts,
-      totalAmount,
+      totalAmount: parseFloat(totalAmount.toFixed(2)),
       address,
       phoneNumber,
       secondaryPhoneNumber
@@ -50,6 +62,7 @@ exports.createOrder = async (req, res) => {
     await order.save();
     res.status(201).json({ message: 'Order created successfully', order });
   } catch (error) {
+    console.error('Create order error:', error, { body: req.body }); // Debug log
     res.status(500).json({ message: 'Error creating order', error: error.message });
   }
 };
@@ -72,7 +85,7 @@ exports.getOrders = async (req, res) => {
     // Fetch all orders without pagination or sorting in the query
     orders = await Order.find()
       .populate('user', 'username email')
-      .populate('products.product', 'name price');
+      .populate('products.product', 'name price discount');
 
     // Define the desired status order: pending first, cancelled/delivered last
     const statusOrder = orderStatus;
@@ -93,7 +106,7 @@ exports.getOrders = async (req, res) => {
       currentPage = pageNum;
     } else {
       // Set pagination metadata for non-paginated response
-      totalPages = 1; // Since all orders are returned, it's effectively 1 page
+      totalPages = 1;
       currentPage = 1;
     }
 
@@ -104,6 +117,7 @@ exports.getOrders = async (req, res) => {
       currentPage,
     });
   } catch (error) {
+    console.error('Get orders error:', error); // Debug log
     res.status(500).json({ message: 'Error fetching orders', error: error.message });
   }
 };
@@ -113,7 +127,7 @@ exports.getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.orderId)
       .populate('user', 'username email')
-      .populate('products.product', 'name price');
+      .populate('products.product', 'name price discount');
 
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
@@ -121,6 +135,7 @@ exports.getOrderById = async (req, res) => {
 
     res.status(200).json(order);
   } catch (error) {
+    console.error('Get order by ID error:', error); // Debug log
     res.status(500).json({ message: 'Error fetching order', error: error.message });
   }
 };
@@ -128,22 +143,21 @@ exports.getOrderById = async (req, res) => {
 // Get orders for the currently logged-in user
 exports.getCurrentUserOrders = async (req, res) => {
   try {
-    // Assume req.user is set by authentication middleware (e.g., JWT)
     const userId = req.user.userId;
+    
 
-    // Validate user
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Fetch orders for the current user
     const orders = await Order.find({ user: userId })
       .populate('user', 'username email')
-      .populate('products.product', 'name price');
+      .populate('products.product', 'name price discount');
 
     res.status(200).json(orders);
   } catch (error) {
+    console.error('Get user orders error:', error); // Debug log
     res.status(500).json({ message: 'Error fetching user orders', error: error.message });
   }
 };
@@ -163,9 +177,7 @@ exports.updateOrderStatus = async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    // Handle stock adjustments based on status change
     if (status === 'cancelled' && order.status !== 'cancelled') {
-      // Restore stock when cancelling
       for (const item of order.products) {
         const product = await Product.findById(item.product);
         if (product) {
@@ -174,7 +186,6 @@ exports.updateOrderStatus = async (req, res) => {
         }
       }
     } else if (order.status === 'cancelled' && status !== 'cancelled') {
-      // Deduct stock when moving from cancelled to another status
       for (const item of order.products) {
         const product = await Product.findById(item.product);
         if (!product) {
@@ -193,6 +204,7 @@ exports.updateOrderStatus = async (req, res) => {
 
     res.status(200).json({ message: 'Order status updated', order });
   } catch (error) {
+    console.error('Update order status error:', error); // Debug log
     res.status(500).json({ message: 'Error updating order status', error: error.message });
   }
 };
@@ -205,7 +217,6 @@ exports.deleteOrder = async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    // Restore product stock for order
     for (const item of order.products) {
       const product = await Product.findById(item.product);
       if (product) {
@@ -217,7 +228,7 @@ exports.deleteOrder = async (req, res) => {
     await order.deleteOne();
     res.status(200).json({ message: 'Order deleted successfully' });
   } catch (error) {
+    console.error('Delete order error:', error); // Debug log
     res.status(500).json({ message: 'Error deleting order', error: error.message });
   }
 };
-

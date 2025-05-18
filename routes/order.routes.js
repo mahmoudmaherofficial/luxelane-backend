@@ -9,8 +9,8 @@ router.get('/', authMiddleware(ROLES.ADMIN, ROLES.SELLER), orderController.getOr
 router.put('/:orderId', authMiddleware(ROLES.ADMIN, ROLES.SELLER), orderController.updateOrderStatus);
 
 router.post('/', authMiddleware(), orderController.createOrder);
+router.get('/user', authMiddleware(), orderController.getCurrentUserOrders);
 router.get('/:orderId', authMiddleware(), orderController.getOrderById);
 router.delete('/:orderId', authMiddleware(), orderController.deleteOrder);
-router.get('/user/:userId', authMiddleware(), orderController.getCurrentUserOrders);
 
 module.exports = router;
