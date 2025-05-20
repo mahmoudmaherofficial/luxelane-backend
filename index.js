@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const mongoose = require('./config/db.config');
+const fs = require('fs');
+const archiver = require('archiver');
 
 // Load environment variables
 dotenv.config();
@@ -27,17 +29,22 @@ app.use(cors({
 app.use(express.static('public'));
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
-// Serve Postman collection
+// Serve Postman collection and environment as a ZIP file
 app.get('/api/postman-collection', (req, res) => {
-  const filePath = path.join(__dirname, 'public', 'postman-collection.json');
-  res.setHeader('Content-Type', 'application/json');
-  res.setHeader('Content-Disposition', 'attachment; filename="LuxeLane-API-Postman-Collection.json"');
-  res.sendFile(filePath, (err) => {
-    if (err) {
-      console.error('Error sending Postman collection:', err);
-      res.status(500).json({ error: 'Failed to download Postman collection' });
-    }
-  });
+  const archive = archiver('zip', { zlib: { level: 9 } });
+
+  res.setHeader('Content-Type', 'application/zip');
+  res.setHeader('Content-Disposition', 'attachment; filename="LuxeLane-Postman-Files.zip"');
+
+  archive.pipe(res);
+
+  const collectionPath = path.join(__dirname, 'public', 'postman-collection.json');
+  const environmentPath = path.join(__dirname, 'public', 'postman-environment.json');
+
+  archive.file(collectionPath, { name: 'LuxeLane-API-Postman-Collection.json' });
+  archive.file(environmentPath, { name: 'Production.postman_environment.json' });
+
+  archive.finalize();
 });
 
 // Routes

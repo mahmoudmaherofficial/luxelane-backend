@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "8f9e2c1a-4b5e-4c7a-9d3b-2f6c8a9d7e8f",
-    "name": "E-commerce API (Production)",
-    "description": "API documentation for an e-commerce application hosted at https://api.code404.site/api. Includes authentication, account management, categories, cart, products, orders, and user management. Tokens are saved to environment variables after register, login, or refresh-token.",
+    "name": "LuxeLane E-commerce API (Production)",
+    "description": "API documentation for the LuxeLane e-commerce application hosted at https://api.code404.site/api. Includes authentication, account management, categories, cart, products, orders, and user management. Tokens are saved to environment variables after register, login, or refresh-token.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -25,8 +25,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             },
             "description": "Register a new user. Optionally include an image via multipart/form-data (switch to form-data in Postman and add 'image' field). Saves accessToken and refreshToken to environment variables."
           },
@@ -42,10 +47,8 @@
                   "if (pm.response.code === 201) {",
                   "    const response = pm.response.json();",
                   "    pm.environment.set('accessToken', response.accessToken);",
-                  "    pm.environment.set('refreshToken', response.refreshToken);",
                   "    pm.test('Tokens saved', function () {",
                   "        pm.expect(pm.environment.get('accessToken')).to.be.a('string');",
-                  "        pm.expect(pm.environment.get('refreshToken')).to.be.a('string');",
                   "    });",
                   "}"
                 ],
@@ -70,8 +73,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             },
             "description": "Log in a user. Saves accessToken and refreshToken to environment variables."
           },
@@ -87,48 +95,7 @@
                   "if (pm.response.code === 200) {",
                   "    const response = pm.response.json();",
                   "    pm.environment.set('accessToken', response.accessToken);",
-                  "    pm.environment.set('refreshToken', response.refreshToken);",
                   "    pm.test('Tokens saved', function () {",
-                  "        pm.expect(pm.environment.get('accessToken')).to.be.a('string');",
-                  "        pm.expect(pm.environment.get('refreshToken')).to.be.a('string');",
-                  "    });",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "Refresh Token",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/auth/refresh-token",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "refresh-token"]
-            },
-            "description": "Refresh access token using refreshToken (sent as a cookie by the server). Saves new accessToken to environment variables."
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Refresh Token - Status code is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "if (pm.response.code === 200) {",
-                  "    const response = pm.response.json();",
-                  "    pm.environment.set('accessToken', response.accessToken);",
-                  "    pm.test('Access token saved', function () {",
                   "        pm.expect(pm.environment.get('accessToken')).to.be.a('string');",
                   "    });",
                   "}"
@@ -150,8 +117,13 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/auth/logout",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "logout"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
             },
             "description": "Log out the user and clear cookies. Clears accessToken and refreshToken from environment variables."
           },
@@ -166,10 +138,52 @@
                   "});",
                   "if (pm.response.code === 200) {",
                   "    pm.environment.set('accessToken', '');",
-                  "    pm.environment.set('refreshToken', '');",
                   "    pm.test('Tokens cleared', function () {",
                   "        pm.expect(pm.environment.get('accessToken')).to.equal('');",
-                  "        pm.expect(pm.environment.get('refreshToken')).to.equal('');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh-token",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh-token"
+              ]
+            },
+            "description": "Refresh access token using refreshToken (sent as a cookie by the server). Saves new accessToken to environment variables."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Refresh Token - Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('accessToken', response.accessToken);",
+                  "    pm.test('Access token saved', function () {",
+                  "        pm.expect(pm.environment.get('accessToken')).to.be.a('string');",
                   "    });",
                   "}"
                 ],
@@ -200,8 +214,12 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/account",
-              "host": ["{{baseUrl}}"],
-              "path": ["account"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "account"
+              ]
             },
             "description": "Retrieve the authenticated user's account details."
           },
@@ -246,8 +264,12 @@
             },
             "url": {
               "raw": "{{baseUrl}}/account",
-              "host": ["{{baseUrl}}"],
-              "path": ["account"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "account"
+              ]
             },
             "description": "Update the authenticated user's account details."
           },
@@ -283,8 +305,12 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/account",
-              "host": ["{{baseUrl}}"],
-              "path": ["account"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "account"
+              ]
             },
             "description": "Delete the authenticated user's account."
           },
@@ -299,7 +325,6 @@
                   "});",
                   "if (pm.response.code === 200) {",
                   "    pm.environment.set('accessToken', '');",
-                  "    pm.environment.set('refreshToken', '');",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -310,7 +335,7 @@
       ]
     },
     {
-      "name": "Category",
+      "name": "Categories",
       "item": [
         {
           "name": "Get All Categories",
@@ -318,9 +343,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/category?page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["category"],
+              "raw": "{{baseUrl}}/categories?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ],
               "query": [
                 {
                   "key": "page",
@@ -355,9 +384,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/category/:categoryId",
-              "host": ["{{baseUrl}}"],
-              "path": ["category", ":categoryId"]
+              "raw": "{{baseUrl}}/categories/:categoryId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                ":categoryId"
+              ]
             },
             "description": "Retrieve a specific category by ID. Replace :categoryId with actual ID."
           },
@@ -401,9 +435,13 @@
               "raw": "{\n  \"name\": \"Electronics\",\n  \"description\": \"Electronic gadgets and devices\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/category",
-              "host": ["{{baseUrl}}"],
-              "path": ["category"]
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
             },
             "description": "Create a new category (admin or seller only)."
           },
@@ -447,9 +485,14 @@
               "raw": "{\n  \"name\": \"Updated Electronics\",\n  \"description\": \"Updated description\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/category/:categoryId",
-              "host": ["{{baseUrl}}"],
-              "path": ["category", ":categoryId"]
+              "raw": "{{baseUrl}}/categories/:categoryId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                ":categoryId"
+              ]
             },
             "description": "Update a category (admin or seller only). Replace :categoryId with actual ID."
           },
@@ -484,9 +527,14 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/category/:categoryId",
-              "host": ["{{baseUrl}}"],
-              "path": ["category", ":categoryId"]
+              "raw": "{{baseUrl}}/categories/:categoryId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                ":categoryId"
+              ]
             },
             "description": "Delete a category (admin or seller only). Replace :categoryId with actual ID."
           },
@@ -536,8 +584,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/cart/add",
-              "host": ["{{baseUrl}}"],
-              "path": ["cart", "add"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "add"
+              ]
             },
             "description": "Add an item to the user's cart. Replace <product_id> with actual product ID."
           },
@@ -573,8 +626,12 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/cart",
-              "host": ["{{baseUrl}}"],
-              "path": ["cart"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart"
+              ]
             },
             "description": "Retrieve the user's cart."
           },
@@ -619,8 +676,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/cart/update",
-              "host": ["{{baseUrl}}"],
-              "path": ["cart", "update"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "update"
+              ]
             },
             "description": "Update an item in the user's cart. Replace <product_id> with actual product ID."
           },
@@ -665,8 +727,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/cart/remove",
-              "host": ["{{baseUrl}}"],
-              "path": ["cart", "remove"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "remove"
+              ]
             },
             "description": "Remove an item from the user's cart. Replace <product_id> with actual product ID."
           },
@@ -702,8 +769,13 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/cart/clear",
-              "host": ["{{baseUrl}}"],
-              "path": ["cart", "clear"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "clear"
+              ]
             },
             "description": "Clear all items from the user's cart."
           },
@@ -725,7 +797,7 @@
       ]
     },
     {
-      "name": "Product",
+      "name": "Products",
       "item": [
         {
           "name": "Get All Products",
@@ -733,9 +805,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/product?page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["product"],
+              "raw": "{{baseUrl}}/products?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ],
               "query": [
                 {
                   "key": "page",
@@ -770,9 +846,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/product/:id",
-              "host": ["{{baseUrl}}"],
-              "path": ["product", ":id"]
+              "raw": "{{baseUrl}}/products/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":id"
+              ]
             },
             "description": "Retrieve a specific product by ID. Replace :id with actual product ID."
           },
@@ -808,19 +889,69 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "multipart/form-data"
               }
             ],
             "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Sample Product\",\n  \"price\": 100,\n  \"discount\": 10,\n  \"stock\": 50,\n  \"description\": \"A sample product description\",\n  \"category\": \"<category_id>\",\n  \"size\": [\"S\", \"M\", \"L\"],\n  \"colors\": [\"Red\", \"Blue\"]\n}"
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Sample Product",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "100",
+                  "type": "text"
+                },
+                {
+                  "key": "discount",
+                  "value": "10",
+                  "type": "text"
+                },
+                {
+                  "key": "stock",
+                  "value": "50",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "A sample product description",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "<category_id>",
+                  "type": "text"
+                },
+                {
+                  "key": "size",
+                  "value": "[\"S\", \"M\", \"L\"]",
+                  "type": "text"
+                },
+                {
+                  "key": "colors",
+                  "value": "[\"Red\", \"Blue\"]",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                }
+              ]
             },
             "url": {
-              "raw": "{{baseUrl}}/product",
-              "host": ["{{baseUrl}}"],
-              "path": ["product"]
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
             },
-            "description": "Create a new product (admin or seller only). For image uploads, switch to form-data and add 'images' field."
+            "description": "Create a new product (admin or seller only). Use form-data for image uploads."
           },
           "response": [],
           "event": [
@@ -854,19 +985,70 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "multipart/form-data"
               }
             ],
             "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Updated Product\",\n  \"price\": 120,\n  \"discount\": 15,\n  \"stock\": 40,\n  \"description\": \"Updated description\",\n  \"category\": \"<category_id>\",\n  \"size\": [\"M\", \"L\"],\n  \"colors\": [\"Blue\", \"Green\"]\n}"
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Product",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "120",
+                  "type": "text"
+                },
+                {
+                  "key": "discount",
+                  "value": "15",
+                  "type": "text"
+                },
+                {
+                  "key": "stock",
+                  "value": "40",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Updated description",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "<category_id>",
+                  "type": "text"
+                },
+                {
+                  "key": "size",
+                  "value": "[\"M\", \"L\"]",
+                  "type": "text"
+                },
+                {
+                  "key": "colors",
+                  "value": "[\"Blue\", \"Green\"]",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                }
+              ]
             },
             "url": {
-              "raw": "{{baseUrl}}/product/:id",
-              "host": ["{{baseUrl}}"],
-              "path": ["product", ":id"]
+              "raw": "{{baseUrl}}/products/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":id"
+              ]
             },
-            "description": "Update a product (admin or seller only). Replace :id with actual product ID. For image uploads, switch to form-data and add 'images' field."
+            "description": "Update a product (admin or seller only). Replace :id with actual product ID. Use form-data for image uploads."
           },
           "response": [],
           "event": [
@@ -899,9 +1081,14 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/product/:id",
-              "host": ["{{baseUrl}}"],
-              "path": ["product", ":id"]
+              "raw": "{{baseUrl}}/products/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":id"
+              ]
             },
             "description": "Delete a product (admin or seller only). Replace :id with actual product ID."
           },
@@ -936,9 +1123,16 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/product/delete-image/:productId/:imageName",
-              "host": ["{{baseUrl}}"],
-              "path": ["product", "delete-image", ":productId", ":imageName"]
+              "raw": "{{baseUrl}}/products/delete-image/:productId/:imageName",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "delete-image",
+                ":productId",
+                ":imageName"
+              ]
             },
             "description": "Delete a specific image from a product (admin or seller only). Replace :productId and :imageName with actual values."
           },
@@ -960,7 +1154,7 @@
       ]
     },
     {
-      "name": "Order",
+      "name": "Orders",
       "item": [
         {
           "name": "Get All Orders",
@@ -978,9 +1172,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/order?page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["order"],
+              "raw": "{{baseUrl}}/orders?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders"
+              ],
               "query": [
                 {
                   "key": "page",
@@ -1002,6 +1200,140 @@
                 "exec": [
                   "pm.test('Get All Orders - Status code is 200', function () {",
                   "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/orders/:orderId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                ":orderId"
+              ]
+            },
+            "description": "Retrieve a specific order by ID. Replace :orderId with actual order ID."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Get Order by ID - Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User Orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/orders/user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "user"
+              ]
+            },
+            "description": "Retrieve orders for the authenticated user."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Get User Orders - Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"products\": [\n    {\n      \"productId\": \"<product_id>\",\n      \"quantity\": 2,\n      \"size\": \"M\",\n      \"color\": \"Blue\"\n    }\n  ],\n  \"totalAmount\": 180,\n  \"address\": \"123 Main St, City\",\n  \"phoneNumber\": \"+1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            },
+            "description": "Create a new order. Replace <product_id> with actual product ID."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Create Order - Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1034,9 +1366,14 @@
               "raw": "{\n  \"status\": \"shipped\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/order/:orderId",
-              "host": ["{{baseUrl}}"],
-              "path": ["order", ":orderId"]
+              "raw": "{{baseUrl}}/orders/:orderId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                ":orderId"
+              ]
             },
             "description": "Update the status of an order (admin or seller only). Replace :orderId with actual order ID. Valid statuses: pending, shipped, delivered, cancelled."
           },
@@ -1047,126 +1384,6 @@
               "script": {
                 "exec": [
                   "pm.test('Update Order Status - Status code is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "Create Order",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"userId\": \"<user_id>\",\n  \"products\": [\n    {\n      \"product\": \"<product_id>\",\n      \"quantity\": 2,\n      \"price\": 90,\n      \"discount\": 10\n    }\n  ],\n  \"totalAmount\": 180,\n  \"address\": \"123 Main St, City\",\n  \"phoneNumber\": \"+1234567890\",\n  \"secondaryPhoneNumber\": \"+0987654321\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/order",
-              "host": ["{{baseUrl}}"],
-              "path": ["order"]
-            },
-            "description": "Create a new order. Replace <user_id> and <product_id> with actual IDs."
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Create Order - Status code is 201', function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "Get User Orders",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/order/user",
-              "host": ["{{baseUrl}}"],
-              "path": ["order", "user"]
-            },
-            "description": "Retrieve orders for the authenticated user."
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Get User Orders - Status code is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "Get Order by ID",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/order/:orderId",
-              "host": ["{{baseUrl}}"],
-              "path": ["order", ":orderId"]
-            },
-            "description": "Retrieve a specific order by ID. Replace :orderId with actual order ID."
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Get Order by ID - Status code is 200', function () {",
                   "    pm.response.to.have.status(200);",
                   "});"
                 ],
@@ -1191,9 +1408,14 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/order/:orderId",
-              "host": ["{{baseUrl}}"],
-              "path": ["order", ":orderId"]
+              "raw": "{{baseUrl}}/orders/:orderId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                ":orderId"
+              ]
             },
             "description": "Delete an order. Replace :orderId with actual order ID."
           },
@@ -1215,7 +1437,7 @@
       ]
     },
     {
-      "name": "User (Admin Only)",
+      "name": "Users (Admin Only)",
       "item": [
         {
           "name": "Get All Users",
@@ -1234,8 +1456,12 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/users?page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["user"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ],
               "query": [
                 {
                   "key": "page",
@@ -1281,8 +1507,13 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/users/:userId",
-              "host": ["{{baseUrl}}"],
-              "path": ["user", ":userId"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":userId"
+              ]
             },
             "description": "Retrieve a specific user by ID (admin only). Replace :userId with actual user ID."
           },
@@ -1327,8 +1558,12 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["user"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
             },
             "description": "Create a new user (admin only). Valid roles: admin, seller, user."
           },
@@ -1373,8 +1608,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users/:userId",
-              "host": ["{{baseUrl}}"],
-              "path": ["user", ":userId"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":userId"
+              ]
             },
             "description": "Update a user (admin only). Replace :userId with actual user ID. Valid roles: admin, seller, user."
           },
@@ -1410,8 +1650,13 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/users/:userId",
-              "host": ["{{baseUrl}}"],
-              "path": ["user", ":userId"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":userId"
+              ]
             },
             "description": "Delete a user (admin only). Replace :userId with actual user ID."
           },
@@ -1438,16 +1683,6 @@
       "key": "baseUrl",
       "value": "https://api.code404.site/api",
       "description": "Base URL of the API"
-    },
-    {
-      "key": "accessToken",
-      "value": "",
-      "description": "JWT access token for authenticated requests"
-    },
-    {
-      "key": "refreshToken",
-      "value": "",
-      "description": "JWT refresh token for token refresh"
     }
   ]
 }

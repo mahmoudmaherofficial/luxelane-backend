@@ -1,0 +1,14 @@
+{
+  "id": "",
+  "name": "Production",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.code404.site/api",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "",
+  "_postman_exported_using": "Postman"
+}
