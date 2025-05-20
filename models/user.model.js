@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   role: {
     type: Number,
     enum: [1995, 1996, 2004], // تحديد الأدوار كـ Strings
-    default: 'user'
+    default: '2004'
   },
 });
 
