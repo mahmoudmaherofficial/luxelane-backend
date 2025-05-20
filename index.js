@@ -27,6 +27,19 @@ app.use(cors({
 app.use(express.static('public'));
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
+// Serve Postman collection
+app.get('/api/postman-collection', (req, res) => {
+  const filePath = path.join(__dirname, 'public', 'postman-collection.json');
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Disposition', 'attachment; filename="LuxeLane-API-Postman-Collection.json"');
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      console.error('Error sending Postman collection:', err);
+      res.status(500).json({ error: 'Failed to download Postman collection' });
+    }
+  });
+});
+
 // Routes
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/users', require('./routes/user.routes'));
