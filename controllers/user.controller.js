@@ -33,7 +33,6 @@ exports.getAllUsers = async (req, res) => {
       currentPage,
     })
   } catch (err) {
-    console.error(err)
     res.status(500).json({ error: 'Server error' })
   }
 }

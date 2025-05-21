@@ -6,11 +6,9 @@ exports.addToCart = async (req, res) => {
   try {
     const { productId, quantity, size, color } = req.body;
     const userId = req.user.userId; // Assuming user is authenticated
-    console.log('Received request:', { productId, quantity, size, color, userId }); // Debug log
 
     // Validate product exists and has stock
     const product = await Product.findById(productId);
-    console.log('Found product:', product); // Debug log
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -25,7 +23,6 @@ exports.addToCart = async (req, res) => {
     }
 
     let cart = await Cart.findOne({ user: userId });
-    console.log('Found cart:', cart); // Debug log
     if (!cart) {
       cart = new Cart({ user: userId, items: [] });
     }
@@ -49,10 +46,8 @@ exports.addToCart = async (req, res) => {
     await cart.save();
     // Re-populate product data to ensure it's included in the response
     const updatedCart = await Cart.findOne({ user: userId }).populate('items.product');
-    console.log('Added to cart:', updatedCart); // Debug log
     res.status(200).json({ message: 'Item added to cart', cart: updatedCart });
   } catch (error) {
-    console.error('Add to cart error:', error); // Debug log
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
@@ -61,17 +56,14 @@ exports.addToCart = async (req, res) => {
 exports.getCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: req.user.userId }).populate('items.product');
-    console.log('Fetched cart before filtering:', cart); // Debug log
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' });
     }
     // Filter out items with null products (invalid references)
     cart.items = cart.items.filter(item => item.product !== null);
     await cart.save(); // Save the cleaned cart
-    console.log('Fetched cart after filtering:', cart); // Debug log
     res.status(200).json(cart);
   } catch (error) {
-    console.error('Get cart error:', error); // Debug log
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
@@ -81,7 +73,6 @@ exports.updateCartItem = async (req, res) => {
   try {
     const { productId, quantity, size, color } = req.body;
     const cart = await Cart.findOne({ user: req.user.userId });
-    console.log('Update cart request:', { productId, quantity, size, color }); // Debug log
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' });
     }
@@ -112,10 +103,8 @@ exports.updateCartItem = async (req, res) => {
     await cart.save();
     // Re-populate product data to ensure it's included in the response
     const updatedCart = await Cart.findOne({ user: req.user.userId }).populate('items.product');
-    console.log('Updated cart:', updatedCart); // Debug log
     res.status(200).json({ message: 'Cart updated', cart: updatedCart });
   } catch (error) {
-    console.error('Update cart error:', error); // Debug log
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
@@ -125,7 +114,6 @@ exports.removeFromCart = async (req, res) => {
   try {
     const { productId, size, color } = req.body;
     const cart = await Cart.findOne({ user: req.user.userId });
-    console.log('Remove from cart request:', { productId, size, color }); // Debug log
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' });
     }
@@ -137,10 +125,8 @@ exports.removeFromCart = async (req, res) => {
     await cart.save();
     // Re-populate product data to ensure it's included in the response
     const updatedCart = await Cart.findOne({ user: req.user.userId }).populate('items.product');
-    console.log('Removed from cart:', updatedCart); // Debug log
     res.status(200).json({ message: 'Item removed from cart', cart: updatedCart });
   } catch (error) {
-    console.error('Remove from cart error:', error); // Debug log
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
@@ -149,17 +135,14 @@ exports.removeFromCart = async (req, res) => {
 exports.clearCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: req.user.userId });
-    console.log('Clear cart for user:', req.user.userId); // Debug log
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' });
     }
 
     cart.items = [];
     await cart.save();
-    console.log('Cleared cart:', cart); // Debug log
     res.status(200).json({ message: 'Cart cleared', cart });
   } catch (error) {
-    console.error('Clear cart error:', error); // Debug log
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

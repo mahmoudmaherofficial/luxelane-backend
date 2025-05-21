@@ -104,7 +104,6 @@ exports.createProduct = async (req, res) => {
 
     res.status(201).json(newProduct);
   } catch (error) {
-    console.error('Product creation error:', error);
     res.status(400).json({ error: 'Failed to create product' });
   }
 };
@@ -152,7 +151,6 @@ exports.updateProduct = async (req, res) => {
 
     res.status(200).json(updatedProduct);
   } catch (err) {
-    console.error('Update error:', err);
     res.status(500).json({ message: 'Error updating product' });
   }
 };
@@ -182,7 +180,6 @@ exports.deleteProductImage = async (req, res) => {
 
     res.json({ message: 'Image deleted successfully' });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
 };

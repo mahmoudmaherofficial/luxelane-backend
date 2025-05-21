@@ -38,7 +38,6 @@ const uploadSingle = async (req, res, next) => {
       req.imageUrl = result.secure_url; // حفظ الرابط المؤقت للصورة
       next();
     } catch (uploadErr) {
-      console.error('Cloudinary upload error:', uploadErr);
       res.status(500).json({ error: 'Image upload failed' });
     }
   });
@@ -66,7 +65,6 @@ const uploadMultiple = (req, res, next) => {
       req.imageUrls = imageUrls; // بنخزنهم في req.imageUrls
       next();
     } catch (uploadErr) {
-      console.error('Cloudinary multi-upload error:', uploadErr);
       res.status(500).json({ error: 'Multiple image upload failed' });
     }
   });

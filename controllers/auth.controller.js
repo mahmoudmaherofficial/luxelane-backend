@@ -92,7 +92,6 @@ exports.login = async (req, res) => {
     }
 
     const { accessToken, refreshToken } = createTokens(user);
-    console.log('Tokens generated:', { accessToken: !!accessToken, refreshToken: !!refreshToken });
 
     res.cookie('accessToken', accessToken, {
       // httpOnly: true,
@@ -110,7 +109,6 @@ exports.login = async (req, res) => {
       path: '/', domain: process.env.DOMAIN
     });
 
-    console.log('Cookies set:', res.getHeaders()['set-cookie']);
 
     res.status(200).json({ accessToken, user: { id: user._id, username: user.username, email, role: user.role } });
   } catch (err) {

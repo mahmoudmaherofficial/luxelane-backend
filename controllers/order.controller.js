@@ -62,7 +62,6 @@ exports.createOrder = async (req, res) => {
     await order.save();
     res.status(201).json({ message: 'Order created successfully', order });
   } catch (error) {
-    console.error('Create order error:', error, { body: req.body }); // Debug log
     res.status(500).json({ message: 'Error creating order', error: error.message });
   }
 };
@@ -117,7 +116,6 @@ exports.getOrders = async (req, res) => {
       currentPage,
     });
   } catch (error) {
-    console.error('Get orders error:', error); // Debug log
     res.status(500).json({ message: 'Error fetching orders', error: error.message });
   }
 };
@@ -135,7 +133,6 @@ exports.getOrderById = async (req, res) => {
 
     res.status(200).json(order);
   } catch (error) {
-    console.error('Get order by ID error:', error); // Debug log
     res.status(500).json({ message: 'Error fetching order', error: error.message });
   }
 };
@@ -157,7 +154,6 @@ exports.getCurrentUserOrders = async (req, res) => {
 
     res.status(200).json(orders);
   } catch (error) {
-    console.error('Get user orders error:', error); // Debug log
     res.status(500).json({ message: 'Error fetching user orders', error: error.message });
   }
 };
@@ -204,7 +200,6 @@ exports.updateOrderStatus = async (req, res) => {
 
     res.status(200).json({ message: 'Order status updated', order });
   } catch (error) {
-    console.error('Update order status error:', error); // Debug log
     res.status(500).json({ message: 'Error updating order status', error: error.message });
   }
 };
@@ -228,7 +223,6 @@ exports.deleteOrder = async (req, res) => {
     await order.deleteOne();
     res.status(200).json({ message: 'Order deleted successfully' });
   } catch (error) {
-    console.error('Delete order error:', error); // Debug log
     res.status(500).json({ message: 'Error deleting order', error: error.message });
   }
 };
