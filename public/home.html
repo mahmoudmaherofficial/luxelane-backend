@@ -258,11 +258,11 @@
       const endpoints = [
         { name: 'Authentication', methods: ['POST /auth/register', 'POST /auth/login', 'POST /auth/refresh-token', 'POST /auth/logout'], description: 'Secure user authentication and session management.' },
         { name: 'Account', methods: ['GET /account', 'PUT /account', 'DELETE /account'], description: 'Manage user account details securely.' },
-        { name: 'Category', methods: ['GET /category', 'GET /category/:id', 'POST /category', 'PUT /category/:id', 'DELETE /category/:id'], description: 'Organize products by categories.' },
+        { name: 'Category', methods: ['GET /categories', 'GET /categories/:id', 'POST /categories', 'PUT /categories/:id', 'DELETE /categories/:id'], description: 'Organize products by categories.' },
         { name: 'Cart', methods: ['POST /cart/add', 'GET /cart', 'PUT /cart/update', 'DELETE /cart/remove', 'DELETE /cart/clear'], description: 'Manage user shopping carts.' },
-        { name: 'Product', methods: ['GET /product', 'GET /product/:id', 'POST /product', 'PUT /product/:id', 'DELETE /product/:id', 'DELETE /product/delete-image/:productId/:imageName'], description: 'Manage product listings and images.' },
-        { name: 'Order', methods: ['GET /order', 'GET /order/:id', 'GET /order/user', 'POST /order', 'PUT /order/:id', 'DELETE /order/:id'], description: 'Handle order creation and tracking.' },
-        { name: 'User (Admin)', methods: ['GET /user', 'GET /user/:id', 'POST /user', 'PUT /user/:id', 'DELETE /user/:id'], description: 'Admin-only user management.' },
+        { name: 'Product', methods: ['GET /products', 'GET /products/:id', 'POST /products', 'PUT /products/:id', 'DELETE /products/:id', 'DELETE /products/delete-image/:productId/:imageName'], description: 'Manage product listings and images.' },
+        { name: 'Order', methods: ['GET /orders', 'GET /orders/:id', 'GET /orders/user', 'POST /orders', 'PUT /orders/:id', 'DELETE /orders/:id'], description: 'Handle order creation and tracking.' },
+        { name: 'User (Admin)', methods: ['GET /users', 'GET /users/:id', 'POST /users', 'PUT /users/:id', 'DELETE /users/:id'], description: 'Admin-only user management.' },
       ];
 
       return (
@@ -286,7 +286,7 @@
     const FAQ = () => {
       const faqs = [
         { question: 'What is LuxeLane API?', answer: 'LuxeLane API is a robust e-commerce backend for luxury shopping platforms, offering secure authentication, product management, and order processing.' },
-        { question: 'How do I get started?', answer: 'Download the Postman collection from the Endpoints section, set the base URL to https://api.code404.site/api, and start with the /auth/register or /auth/login endpoints.' },
+        { question: 'How do I get started?', answer: 'Download the Postman collection from the Endpoints section, import files to Postman, set the environment to "Production", and start with the /auth/register or /auth/login endpoints.' },
         { question: 'What roles are supported?', answer: 'The API supports three roles: admin (full access), seller (manage products/categories), and user (shop and manage account/cart/orders).' },
         { question: 'Is the API secure?', answer: 'Yes, it uses JWT for authentication, bcrypt for password hashing, and secure cookies for refresh tokens.' },
       ];
